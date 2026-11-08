@@ -4,68 +4,110 @@ This document defines the formal schema, data types, validation constraints, and
 
 ---
 
-## 1. Core Invoice Fields
+## 1. Core and Extended Invoice Fields
 
-| Field Name | Type | Requirement | Format / Pattern | Description |
-| :--- | :--- | :--- | :--- | :--- |
-| `invoice_number` | `str` | **Required** | Length: 1–100 chars; Alphanumeric & symbols (`-`, `/`, `_`) | Unique identification number assigned by the vendor. |
-| `invoice_date` | `date` | **Required** | ISO 8601 (`YYYY-MM-DD`) | Date on which the invoice was issued. |
-| `vendor_name` | `str` | **Required** | Length: 1–200 chars | Legal corporate or trading name of the billing party. |
-| `currency` | `str` | **Required** | ISO 4217 3-letter code (`USD`, `EUR`, `GBP`) or recognized symbol (`$`, `€`, `£`) | Currency in which monetary values are denoted. |
-| `subtotal` | `Decimal` | *Optional* | Non-negative numeric (`>= 0.00`) with 2 decimal places | Net billable sum prior to applicable taxes and fees. |
-| `tax` | `Decimal` | *Optional* | Non-negative numeric (`>= 0.00`) with 2 decimal places | Aggregated tax, VAT, or GST applied to the invoice. |
-| `total` | `Decimal` | **Required** | Non-negative numeric (`>= 0.00`) with 2 decimal places | Final gross amount payable. |
+### 1.1 Identification Fields
+| Field Name | Type | Requirement | Description |
+| :--- | :--- | :--- | :--- |
+| `invoice_number` | `str` | **Required** | Unique identifier assigned by the vendor (1–100 chars). |
+| `invoice_date` | `date` | **Required** | Date invoice was issued (ISO 8601). |
+| `due_date` | `date` | *Optional* | Date payment is due. |
+| `purchase_order_number` | `str` | *Optional* | Associated purchase order number. |
+| `currency` | `str` | **Required** | ISO 4217 3-letter currency code (`USD`, `EUR`, `GBP`). |
+
+### 1.2 Vendor Profile Fields
+| Field Name | Type | Requirement | Description |
+| :--- | :--- | :--- | :--- |
+| `vendor_name` | `str` | **Required** | Legal corporate or trading name of billing entity (1–200 chars). |
+| `vendor_address` | `str` | *Optional* | Physical or registered corporate address. |
+| `vendor_email` | `str` | *Optional* | Vendor billing contact email. |
+| `vendor_phone` | `str` | *Optional* | Vendor phone number. |
+| `vendor_tax_id` | `str` | *Optional* | Tax, VAT, or corporate identifier (`US-EIN-...`, `DE-VAT-...`). |
+
+### 1.3 Customer Profile Fields
+| Field Name | Type | Requirement | Description |
+| :--- | :--- | :--- | :--- |
+| `customer_name` | `str` | *Optional* | Customer or Bill-To corporate entity name. |
+| `customer_address` | `str` | *Optional* | Customer billing or delivery address. |
+| `customer_email` | `str` | *Optional* | Customer contact email. |
+| `customer_tax_id` | `str` | *Optional* | Customer tax/VAT registration identifier. |
+
+### 1.4 Financial Summary Fields
+| Field Name | Type | Requirement | Description |
+| :--- | :--- | :--- | :--- |
+| `subtotal` | `Decimal` | *Optional* | Net billable sum prior to applicable taxes and fees. |
+| `tax` | `Decimal` | *Optional* | Aggregated tax, VAT, or GST applied to invoice. |
+| `tax_rate` | `Decimal` | *Optional* | Explicit tax percentage applied (e.g. 0.10 for 10%). |
+| `discount_amount` | `Decimal` | *Optional* | Discount amount subtracted from total. |
+| `shipping_amount` | `Decimal` | *Optional* | Freight, shipping, or dispatch fee. |
+| `total` | `Decimal` | **Required** | Final gross amount payable. |
+| `amount_paid` | `Decimal` | *Optional* | Amount prepaid or already credited. |
+| `balance_due` | `Decimal` | *Optional* | Outstanding balance payable. |
+
+### 1.5 Line-Item Fields
+Structured line items represented by `InvoiceLineItem`:
+- `description`: Item or service description (`str`, required, min length 1).
+- `quantity`: Billed quantity or hours (`Decimal | None`).
+- `unit_of_measure`: Measurement unit if explicit (`str | None`).
+- `unit_price`: Rate or unit price (`Decimal | None`).
+- `discount`: Line-level discount (`Decimal | None`).
+- `tax`: Line-level tax (`Decimal | None`).
+- `total`: Extended line total (`Decimal | None`).
+- `bounding_box`: Spatial bounding box spanning the table row (`BoundingBox | None`).
+- `page_number`: 1-based index where line item was identified (`int | None`).
+- `confidence`: Heuristic extraction confidence score (`float`).
+- `status`: Row status (`"extracted"`, `"ambiguous"`, `"needs_review"`).
 
 ---
 
 ## 2. Validation & Business Rules
 
-### 2.1 Syntactic Validation
-- **Non-empty Constraints**: Required string fields (`invoice_number`, `vendor_name`, `currency`) must not be empty or solely whitespace.
-- **Date Parsability**: `invoice_date` must conform to standard date representations and resolve to a valid calendar date.
-- **Monetary Precision**: All numeric monetary fields must be parsed into fixed-point `Decimal` instances to avoid IEEE 754 floating-point inaccuracies.
+### 2.1 Syntactic Schema Validation (Phase 4 Implemented)
+- **Non-empty Constraints**: Required fields (`invoice_number`, `vendor_name`, `currency`) must not be empty or solely whitespace.
+- **Date Parsability**: Dates parse into standard `datetime.date` objects.
+- **Monetary Precision**: All numeric amounts parse into fixed-point `Decimal` instances to avoid floating-point inaccuracies.
+- **Negative Negative Case Handling**: Deliberately omitted required fields (e.g. `DOC-SYN-007` missing `invoice_number`, `DOC-SYN-018` missing `vendor_name`) fail schema validation and transition the record to `review_status="needs_review"`.
 
-### 2.2 Semantic & Arithmetic Business Rules
-1. **Total Consistency Rule**:
-   $$\text{subtotal} + \text{tax} = \text{total}$$
-   - When both `subtotal` and `tax` are present, their sum must match `total` within a tolerance of $\pm 0.02$ currency units (to accommodate standard rounding differences).
-2. **Subtotal vs Total**:
-   $$\text{subtotal} \le \text{total}$$
-   - Unless an explicit credit or negative adjustment is registered, the subtotal cannot exceed the total.
-3. **Temporal Validity**:
-   - `invoice_date` must not be in the future (beyond a configurable grace threshold, e.g. 1 day for international timezone differences).
-   - Invoices dated older than 10 years should trigger a warning flag for potential archival or stale entry.
-4. **Currency Standardization**:
-   - Currency symbols (`$`, `€`, `£`, `¥`) must be mapped to their canonical ISO 4217 code during normalization (e.g. `$` ➔ `USD` or specified regional default).
+### 2.2 Semantic & Arithmetic Business Rules (Phase 5)
+1. **Total Consistency Rule**: $\text{subtotal} + \text{tax} = \text{total}$ within $\pm 0.02$ tolerance.
+2. **Subtotal vs Total**: $\text{subtotal} \le \text{total}$ (unless credit adjustment applied).
+3. **Temporal Validity**: Issuance date must not be in the future beyond timezone grace periods.
+4. **Currency Standardization**: Currency symbols mapped to canonical ISO 4217 codes.
 
 ---
 
-## 3. Evidence Grounding & Metadata
+## 3. Evidence Grounding & Provenance Metadata
 
-To guarantee auditability, every extracted value must be linked to an evidence record containing:
+Every extracted value is linked to a `FieldEvidence` record containing:
 
 ```json
 {
-  "raw_text": "INV-2024-00941",
-  "confidence": 0.98,
-  "method": "native_text",
+  "field_name": "invoice_number",
+  "extracted_value": "INV-2024-0001",
+  "raw_text": "INV-2024-0001",
+  "confidence": 1.0,
+  "method": "rule_based",
+  "source_method": "native_text",
+  "ocr_confidence": null,
+  "status": "extracted",
   "page_number": 1,
   "bounding_box": {
     "page": 1,
-    "x0": 420.5,
-    "y0": 65.2,
-    "x1": 530.8,
-    "y1": 78.4
-  }
+    "x0": 408.3,
+    "y0": 110.4,
+    "x1": 479.6,
+    "y1": 119.0
+  },
+  "candidates": [],
+  "warnings": []
 }
 ```
 
-### Evidence Attributes
-- `raw_text`: The exact, unaltered string segment extracted from the PDF or OCR stream prior to normalization.
-- `confidence`: Confidence score in the range `[0.0, 1.0]`. Native PDF extractions default to high confidence (`0.95–1.0`), whereas OCR extractions inherit character/word confidence scores from Tesseract.
-- `method`: Extraction strategy identifier (`native_text`, `ocr`, `rule_based`, `pattern`, `human_correction`).
-- `page_number`: 1-based page index indicating where the evidence token resides.
-- `bounding_box`: Normalised or point coordinates `[x0, y0, x1, y1]` allowing visual highlighting on the rendered PDF preview.
+### Evidence Status Taxonomy
+- `extracted`: Successfully located and parsed with reliable evidence.
+- `missing`: Explicitly omitted or absent from the document (e.g. `[Invoice Number: NOT SPECIFIED]`).
+- `ambiguous`: Multiple competing candidate interpretations exist (e.g. date format `03/04/2024`).
+- `needs_review`: Extraction uncertain, requiring human review.
 
 ---
 
@@ -73,9 +115,12 @@ To guarantee auditability, every extracted value must be linked to an evidence r
 
 Each processed invoice yields an `InvoiceExtractionRecord`:
 
-- `document_id`: Unique identifier (UUIDv4) generated upon initial ingestion.
-- `file_name`: Original filename submitted by the user.
-- `data`: Validated `InvoiceData` payload.
+- `document_id`: Unique identifier (e.g., `DOC-SYN-001`).
+- `file_name`: Original document filename.
+- `data`: Validated `InvoiceData` payload (or `None` if schema validation failed).
+- `raw_fields`: Dictionary of raw extracted fields prior to validation.
 - `evidence`: Dictionary mapping field names to `FieldEvidence` objects.
-- `validation_passed`: Boolean flag denoting whether all schema and business rules passed.
-- `review_status`: State enumeration (`pending`, `approved`, `rejected`, `corrected`).
+- `validation_passed`: Boolean flag denoting whether schema validation succeeded.
+- `validation_errors`: Detailed list of Pydantic validation errors if validation failed.
+- `review_status`: State enumeration (`approved`, `needs_review`, `pending`, `rejected`, `corrected`).
+- `warnings`: Document-level non-fatal extraction warnings.

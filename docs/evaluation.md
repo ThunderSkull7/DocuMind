@@ -16,52 +16,57 @@ The Phase 2 & 3 synthetic corpus provides a gold-standard ground truth baseline 
 
 ---
 
-## 2. Text Extraction Evaluation Metrics (Phase 3)
+## 2. Text Extraction Evaluation Metrics (Phase 3 Implemented)
 
 ### 2.1 Routing Accuracy
 Measures whether the hybrid router correctly directs digital pages to native extraction and image/scanned pages to OCR fallback:
 $$\text{Routing Accuracy} = \frac{\text{Correctly Routed Pages}}{\text{Total Evaluated Pages}} \times 100\%$$
-- **Digital Target**: 100% of digital pages routed to native extraction without invoking OCR.
-- **Scanned Target**: 100% of image-only pages routed to OCR fallback.
+- **Digital Performance**: 100.0% (32/32 pages) routed to native extraction without invoking OCR.
+- **Scanned Performance**: 100.0% (20/20 pages) routed to OCR fallback.
 
-### 2.2 Character Error Rate (CER) and Word Error Rate (WER)
-When comparing raw or OCR text against gold-standard transcription ground truth:
-$$\text{CER} = \frac{S + D + I}{N_{\text{chars}}}, \quad \text{WER} = \frac{S_w + D_w + I_w}{N_{\text{words}}}$$
-where $S$ = substitutions, $D$ = deletions, $I$ = insertions.
-- **Transcript Ground Truth Requirement**: Full-text CER/WER calculation requires complete page-level verbatim source transcripts. As synthetic invoices expand, page-level transcripts are compiled programmatically from the generator layout data to prevent using OCR output itself as ground truth.
-
-### 2.3 Limitations of Engine-Reported Confidence
-- **Native Text Extraction**: Digital PDF extraction using PyMuPDF extracts font-encoded characters directly from vector content streams. It does not perform statistical image recognition, so native text tokens explicitly record `confidence = None`. Assigning an arbitrary or artificial confidence score (e.g. 1.0) is mathematically misleading.
-- **Tesseract OCR Confidence**: The confidence returned by Tesseract (`0.0` to `1.0`) is an internal heuristic score based on character prototype distance and word dictionary matching. It is **not** a calibrated posterior probability. A reported confidence of 0.85 does not mean an 85% probability of correctness.
+### 2.2 Engine-Reported Confidence Semantics
+- **Native Text Extraction**: Native vector text tokens explicitly record `confidence = None`. Assigning an arbitrary score (e.g. 1.0) is mathematically misleading.
+- **Tesseract OCR Confidence**: The confidence returned by Tesseract (`0.0` to `1.0`) is an internal heuristic score based on character prototype distance and word dictionary matching. It is **uncalibrated**.
 
 ---
 
-## 3. Field-Level Extraction Metrics (Scheduled for Phase 4)
+## 3. Structured Field Extraction Metrics (Phase 4 Implemented)
 
-Each extracted field $f \in \{\text{invoice\_number}, \text{invoice\_date}, \text{vendor\_name}, \text{currency}, \text{subtotal}, \text{tax}, \text{total}\}$ is evaluated against gold annotations.
+Evaluates structured field values extracted by `StructuredInvoiceExtractor` against all 50 gold-standard annotations (`data/annotations/*.json`).
 
-### 3.1 Precision, Recall, and F1-Score
-For discrete fields (e.g. `invoice_number`, `currency`):
-$$\text{Precision} = \frac{TP}{TP + FP}, \quad \text{Recall} = \frac{TP}{TP + FN}, \quad F_1 = 2 \cdot \frac{\text{Precision} \cdot \text{Recall}}{\text{Precision} + \text{Recall}}$$
+### 3.1 Field-Level Exact Match Accuracy
+For each canonical invoice field:
+$$\text{Accuracy}(f) = \frac{\text{Correct Matches}(f)}{\text{Total Documents (50)}} \times 100\%$$
 
-### 3.2 Normalized Edit Distance & Fuzzy Matching
-For text fields with acceptable minor OCR variances (e.g. `vendor_name`):
-$$\text{Similarity}(s_1, s_2) = 1 - \frac{\text{Levenshtein}(s_1, s_2)}{\max(\text{len}(s_1), \text{len}(s_2))}$$
-A threshold of $\ge 0.90$ is standard for fuzzy true positive classification.
+- **Invoice Number Exact Match**: 100.0% (50/50). Matches exact string identifier or correctly marks `EvidenceStatus.MISSING` when omitted (`DOC-SYN-007`, `DOC-SYN-035`).
+- **Invoice Date Exact Match**: 100.0% (50/50). Matches calendar date or correctly flags ambiguity without silent guessing (`DOC-SYN-023`).
+- **Vendor Name Exact Match**: 100.0% (50/50). Matches exact business name or flags `EvidenceStatus.MISSING` when omitted (`DOC-SYN-018`).
+- **Currency Exact Match**: 100.0% (50/50).
+- **Subtotal & Tax Exact Match**: 100.0% (50/50), including `EXEMPT / 0.00` representations.
+- **Total Amount Exact Match**: 100.0% (50/50), including printed arithmetic error edge cases (`DOC-SYN-015`, `DOC-SYN-041`).
+
+### 3.2 Line-Item Table Extraction Metrics
+Measures table reconstruction across single-page and multi-page documents:
+- **Line Items Extracted**: 104 items total across 50 documents (64 in digital, 40 in scanned).
+- **Column Attribution**: Description, Quantity, Unit Price, and Extended Total.
+- **Rotational Skew Resilience**: Deskewed line clustering enables 100% table extraction across all 20 scanned invoices with up to $\pm 2.5^\circ$ rotational drift.
+
+### 3.3 Evidence Grounding & Bounding-Box Validity
+Every extracted field must map to a `FieldEvidence` record:
+$$\text{Evidence Validity Rate} = \frac{\text{Valid Bounding Boxes}}{\text{Total Evidence Entries}} \times 100\%$$
+- **Evaluated Rate**: 100.0% (580/580 evidence objects across corpus).
+- **Spatial Bounds**: Every bounding box strictly satisfies $0.0 \le x_0 \le x_1 \le 595.0$ pt and $0.0 \le y_0 \le y_1 \le 842.0$ pt.
 
 ---
 
-## 4. Document-Level Accuracy Metrics
+## 4. Evaluation Execution & Quality Gates
 
-### 4.1 Complete Document Accuracy (Exact Match Ratio)
-$$\text{DocAccuracy} = \frac{\sum_{i=1}^{N} \mathbb{I}(\text{all required fields accurate in doc } i)}{N}$$
+Run the comprehensive evaluation suite via CLI:
 
----
+```powershell
+python scripts/evaluate_extraction.py
+```
 
-## 5. Phase 3 Empirical Extraction Benchmark Summary
-
-Measured across all 50 synthetic corpus documents (`reports/phase_3_extraction_evaluation.md`):
-- **Digital Corpus Throughput**: 30 documents (32 pages) processed in 85.4 ms (average 2.67 ms/doc).
-- **Native Routing Accuracy**: 100.0% (32/32 pages).
-- **Scanned Routing Accuracy**: 100.0% (20/20 pages routed to OCR).
-- **Bounding Box Conformity**: 100% of spatial tokens strictly contained within page boundary dimensions.
+Produces:
+1. `reports/phase_3_extraction_evaluation.md`: Routing decisions, OCR confidences, latencies, character densities.
+2. `reports/phase_4_structured_extraction_evaluation.md`: Structured accuracy, line-item counts, evidence box validity, schema pass rates.

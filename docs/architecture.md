@@ -102,8 +102,9 @@ flowchart TD
 | `documind.dataset` | Deterministic synthetic invoice corpus generation (50 docs) & gold annotations. | `pymupdf`, `Pillow`, `pydantic` | **Implemented** |
 | `documind.ingestion` | File upload validation, MIME checking, size bounds, safe unique atomic storage. | `pymupdf`, `hashlib`, standard library | **Implemented** |
 | `documind.extraction` | Native PDF text extraction, Tesseract OCR fallback, hybrid routing, normalization. | `pymupdf`, `pytesseract`, `Pillow` | **Implemented** |
-| `documind.schemas` | Pydantic data models for invoice fields, evidence, and records. | `pydantic` | **Implemented** |
-| `documind.validation` | Syntactic schema validation and semantic business rules (arithmetic integrity). | `pydantic`, business rule engines | Phase 4 |
+| `documind.schemas` | Pydantic data models for invoice fields, line items, evidence, and records. | `pydantic` | **Implemented** |
+| `documind.extraction` | Hybrid PDF extraction, Tesseract OCR, deskewed spatial clustering, structured field extraction. | `pymupdf`, `pytesseract`, `Pillow` | **Implemented** |
+| `documind.validation` | Syntactic schema validation (Phase 4 implemented) and semantic business rules (arithmetic integrity, duplicate checks). | `pydantic`, business rule engines | Phase 5 |
 | `documind.matching` | Vendor and PO reconciliation against reference records. | Fuzzy string matching, normalization | Future |
 | `documind.review` | State transitions (pending, approved, rejected, corrected), audit trail logging. | Data classes, state management | Phase 5 |
 | `documind.reporting` | Exporting verified invoice records to structured formats (CSV, JSON). | `pandas`, standard library `json` | Phase 6 |
@@ -116,3 +117,4 @@ flowchart TD
 - **ADR 0001**: Initial Architecture and Foundation Selection (`docs/decisions/0001-initial-architecture.md`).
 - **ADR 0002**: Secure Ingestion and Synthetic Dataset Architecture (`docs/decisions/0002-ingestion-and-dataset-architecture.md`).
 - **ADR 0003**: Hybrid PDF Text Extraction & OCR Pipeline (`docs/decisions/0003-extraction-pipeline.md`).
+- **ADR 0004**: Structured Invoice Field Extraction & Evidence Grounding (`docs/decisions/0004-structured-extraction-and-evidence-mapping.md`).

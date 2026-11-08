@@ -1,7 +1,7 @@
 # DocuMind Phase 3 — Hybrid PDF Text Extraction & OCR Evaluation Report
 
-**Evaluation Date**: 2026-11-08  
-**DocuMind Version**: 0.1.0  
+**Evaluation Date**: 2026-11-08
+**DocuMind Version**: 0.1.0
 **Engine Environment**: PyMuPDF `2.1`, Tesseract OCR binary: `C:\Program Files\Tesseract-OCR\tesseract.exe` (Available: `True`)
 
 ---
@@ -24,7 +24,7 @@ This report establishes the empirical performance and verification of DocuMind's
 | **Avg. Words / Page** | 77.5 words | 78.5 words | 77.9 words |
 | **Avg. Word Bounding Boxes** | 77.5 / page | 78.5 / page | — |
 | **Mean OCR Confidence** | `None` (Explicit) | **0.9405** (Uncalibrated) | — |
-| **Avg. Latency / Document** | 2.58 ms | 1024.50 ms | 411.35 ms |
+| **Avg. Latency / Document** | 2.54 ms | 996.13 ms | 419.32 ms |
 
 ---
 
@@ -77,26 +77,26 @@ All 30 digital vector documents (`DOC-SYN-001` to `DOC-SYN-030`) were evaluated:
 
 | Document ID | Layout Style | Skew Angle | DPI | OCR Words | OCR Chars | Avg. Conf | Duration | Status |
 | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| `DOC-SYN-031` | scanned | variance | 300 | 79 | 517 | 0.93 | 940.1 ms | ✅ success |
-| `DOC-SYN-032` | scanned | variance | 300 | 78 | 515 | 0.95 | 936.7 ms | ✅ success |
-| `DOC-SYN-033` | scanned | variance | 300 | 80 | 538 | 0.94 | 1017.9 ms | ✅ success |
-| `DOC-SYN-034` | scanned | variance | 300 | 78 | 517 | 0.95 | 1039.2 ms | ✅ success |
-| `DOC-SYN-035` | scanned | variance | 300 | 79 | 516 | 0.95 | 955.8 ms | ✅ success |
-| `DOC-SYN-036` | scanned | variance | 300 | 81 | 507 | 0.94 | 1031.9 ms | ✅ success |
-| `DOC-SYN-037` | scanned | variance | 300 | 79 | 516 | 0.93 | 1007.8 ms | ✅ success |
-| `DOC-SYN-038` | scanned | variance | 300 | 80 | 528 | 0.94 | 1116.4 ms | ✅ success |
-| `DOC-SYN-039` | scanned | variance | 300 | 76 | 514 | 0.95 | 996.3 ms | ✅ success |
-| `DOC-SYN-040` | scanned | variance | 300 | 80 | 527 | 0.95 | 1075.9 ms | ✅ success |
-| `DOC-SYN-041` | scanned | variance | 300 | 76 | 497 | 0.93 | 979.6 ms | ✅ success |
-| `DOC-SYN-042` | scanned | variance | 300 | 70 | 461 | 0.93 | 998.9 ms | ✅ success |
-| `DOC-SYN-043` | scanned | variance | 300 | 80 | 535 | 0.94 | 1002.8 ms | ✅ success |
-| `DOC-SYN-044` | scanned | variance | 300 | 80 | 532 | 0.95 | 1089.4 ms | ✅ success |
-| `DOC-SYN-045` | scanned | variance | 300 | 77 | 527 | 0.94 | 1085.7 ms | ✅ success |
-| `DOC-SYN-046` | scanned | variance | 300 | 79 | 502 | 0.94 | 1087.4 ms | ✅ success |
-| `DOC-SYN-047` | scanned | variance | 300 | 79 | 513 | 0.94 | 989.9 ms | ✅ success |
-| `DOC-SYN-048` | scanned | variance | 300 | 81 | 518 | 0.95 | 1070.7 ms | ✅ success |
-| `DOC-SYN-049` | scanned | variance | 300 | 76 | 507 | 0.94 | 991.3 ms | ✅ success |
-| `DOC-SYN-050` | scanned | variance | 300 | 81 | 536 | 0.94 | 1076.5 ms | ✅ success |
+| `DOC-SYN-031` | scanned | variance | 300 | 79 | 517 | 0.93 | 933.5 ms | ✅ success |
+| `DOC-SYN-032` | scanned | variance | 300 | 78 | 515 | 0.95 | 945.8 ms | ✅ success |
+| `DOC-SYN-033` | scanned | variance | 300 | 80 | 538 | 0.94 | 1051.0 ms | ✅ success |
+| `DOC-SYN-034` | scanned | variance | 300 | 78 | 517 | 0.95 | 1047.0 ms | ✅ success |
+| `DOC-SYN-035` | scanned | variance | 300 | 79 | 516 | 0.95 | 922.6 ms | ✅ success |
+| `DOC-SYN-036` | scanned | variance | 300 | 81 | 507 | 0.94 | 1024.0 ms | ✅ success |
+| `DOC-SYN-037` | scanned | variance | 300 | 79 | 516 | 0.93 | 1000.8 ms | ✅ success |
+| `DOC-SYN-038` | scanned | variance | 300 | 80 | 528 | 0.94 | 1019.5 ms | ✅ success |
+| `DOC-SYN-039` | scanned | variance | 300 | 76 | 514 | 0.95 | 1063.9 ms | ✅ success |
+| `DOC-SYN-040` | scanned | variance | 300 | 80 | 527 | 0.95 | 1043.3 ms | ✅ success |
+| `DOC-SYN-041` | scanned | variance | 300 | 76 | 497 | 0.93 | 963.3 ms | ✅ success |
+| `DOC-SYN-042` | scanned | variance | 300 | 70 | 461 | 0.93 | 1017.9 ms | ✅ success |
+| `DOC-SYN-043` | scanned | variance | 300 | 80 | 535 | 0.94 | 925.9 ms | ✅ success |
+| `DOC-SYN-044` | scanned | variance | 300 | 80 | 532 | 0.95 | 1068.4 ms | ✅ success |
+| `DOC-SYN-045` | scanned | variance | 300 | 77 | 527 | 0.94 | 1016.0 ms | ✅ success |
+| `DOC-SYN-046` | scanned | variance | 300 | 79 | 502 | 0.94 | 1018.5 ms | ✅ success |
+| `DOC-SYN-047` | scanned | variance | 300 | 79 | 513 | 0.94 | 918.7 ms | ✅ success |
+| `DOC-SYN-048` | scanned | variance | 300 | 81 | 518 | 0.95 | 1032.4 ms | ✅ success |
+| `DOC-SYN-049` | scanned | variance | 300 | 76 | 507 | 0.94 | 915.9 ms | ✅ success |
+| `DOC-SYN-050` | scanned | variance | 300 | 81 | 536 | 0.94 | 994.1 ms | ✅ success |
 
 ---
 
