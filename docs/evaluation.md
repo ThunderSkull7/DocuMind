@@ -59,7 +59,32 @@ $$\text{Evidence Validity Rate} = \frac{\text{Valid Bounding Boxes}}{\text{Total
 
 ---
 
-## 4. Evaluation Execution & Quality Gates
+## 4. Business Validation & Discrepancy Detection Metrics (Phase 5 Implemented)
+
+Evaluates the deterministic validation subsystem across all 50 documents, measuring its ability to catch arithmetic errors, completeness issues, duplicate submissions, and reference data mismatches.
+
+### 4.1 Document Status Distribution
+- **Valid (84.0%, 42/50)**: Passed all arithmetic, completeness, and business integrity rules.
+- **Valid with Warnings (4.0%, 2/50)**: Passed financial checks but flagged with non-fatal audit notices:
+  - `DOC-SYN-023`: Ambiguous date format `03/04/2024` flagged by `BIZ_004`.
+  - `DOC-SYN-029`: Visually confusable OCR characters (`INV-0O1I1lB8`) flagged by `BIZ_008`.
+- **Needs Review (6.0%, 3/50)**: High-severity discrepancies requiring human intervention:
+  - `DOC-SYN-015`: Arithmetic total mismatch ($1560.00 + $156.00 = $1716.00 != $1766.00, diff +$50.00) flagged by `ARITH_003`.
+  - `DOC-SYN-041`: Scanned arithmetic total mismatch ($535.50 + $53.55 = $589.05 != $689.05, diff +$100.00) flagged by `ARITH_003`.
+  - `DOC-SYN-045`: Shared duplicate identifier `INV-2024-DUP999` with another vendor flagged by `DUP_003`.
+- **Invalid (6.0%, 3/50)**: Critical missing mandatory metadata:
+  - `DOC-SYN-007`: Missing invoice number flagged by `BIZ_001`.
+  - `DOC-SYN-018`: Missing vendor name flagged by `BIZ_001`.
+  - `DOC-SYN-035`: Scanned invoice with missing invoice number flagged by `BIZ_001`.
+- **Indeterminate (0.0%, 0/50)**.
+
+### 4.2 Precision Guarantees
+- **Arithmetic Precision**: `Decimal` fixed-point arithmetic guarantees 0.00 floating-point drift across all calculations.
+- **Non-Destructive Integrity**: 100% of original extraction records, tokens, and evidence bounding boxes are preserved unaltered.
+
+---
+
+## 5. Evaluation Execution & Quality Gates
 
 Run the comprehensive evaluation suite via CLI:
 
@@ -70,3 +95,4 @@ python scripts/evaluate_extraction.py
 Produces:
 1. `reports/phase_3_extraction_evaluation.md`: Routing decisions, OCR confidences, latencies, character densities.
 2. `reports/phase_4_structured_extraction_evaluation.md`: Structured accuracy, line-item counts, evidence box validity, schema pass rates.
+3. `reports/phase_5_validation_evaluation.md`: Business validation statuses, discrepancy distributions, rule catalogue performance, and edge-case classification.

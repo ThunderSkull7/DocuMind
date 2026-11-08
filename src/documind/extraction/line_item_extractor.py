@@ -157,11 +157,21 @@ class LineItemExtractor:
         self,
         pages: list,
     ) -> list[InvoiceLineItem]:
-        """Extract line items across all pages in a document."""
+        """Extract line items across all pages in a document, filtering identical table repetitions."""
         all_items: list[InvoiceLineItem] = []
+        seen_page_signatures: list[list[tuple]] = []
+
         for p in pages:
             words = [w for b in p.text_blocks for w in b.words]
             lines = cluster_words_into_lines(words)
             page_items = self.extract_line_items_from_lines(lines, p.page_number)
-            all_items.extend(page_items)
+
+            if page_items:
+                sig = [(it.description, it.quantity, it.unit_price, it.total) for it in page_items]
+                if sig in seen_page_signatures:
+                    # Identical repeated table on subsequent page (e.g. repeated template headers); skip
+                    continue
+                seen_page_signatures.append(sig)
+                all_items.extend(page_items)
+
         return all_items

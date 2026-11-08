@@ -92,6 +92,33 @@ flowchart TD
 
 ---
 
+### 3.2 Business Validation & Discrepancy Architecture (Phase 5)
+
+```mermaid
+flowchart TD
+    ExtRec["InvoiceExtractionRecord (Phase 4)"] --> ValService["ValidationService (Phase 5)"]
+    ValService --> Arith["ArithmeticValidator (Fixed-Point Decimal)"]
+    ValService --> Biz["BusinessRulesValidator (Completeness & Dates)"]
+    ValService --> Dup["DuplicateDetector (Multi-Tier Screening)"]
+    ValService --> Ref["ReferenceMatcher (Vendor Master & POs)"]
+    
+    Arith --> Discrepancies["Discrepancy Aggregator"]
+    Biz --> Discrepancies
+    Dup --> Discrepancies
+    Ref --> Discrepancies
+    
+    Discrepancies --> StatusCalc["OverallValidationStatus Resolver"]
+    StatusCalc --> ValResult["ValidationResult (Non-Destructive)"]
+```
+
+The validation layer guarantees:
+1. **Fixed-Point Precision**: Financial comparisons use Python `Decimal` with half-up cent precision, avoiding floating-point rounding errors.
+2. **Deterministic Discrepancy Models**: Findings include rule ID, category, severity, affected fields, expected/actual values, difference, human-readable explanations, and spatial evidence references.
+3. **Multi-Tier Duplicate Screening**: Detects exact file hash duplicates (`DUP_000`), exact vendor-invoice duplicates (`DUP_001`), potential duplicates (`DUP_002`), and cross-vendor collisions (`DUP_003`).
+4. **Non-Destructive Execution**: Validation outputs audit objects without mutating original extraction records or dropping files.
+
+---
+
 ## 4. Component Responsibilities
 
 | Component | Responsibility | Primary Technologies | Status |
@@ -104,9 +131,9 @@ flowchart TD
 | `documind.extraction` | Native PDF text extraction, Tesseract OCR fallback, hybrid routing, normalization. | `pymupdf`, `pytesseract`, `Pillow` | **Implemented** |
 | `documind.schemas` | Pydantic data models for invoice fields, line items, evidence, and records. | `pydantic` | **Implemented** |
 | `documind.extraction` | Hybrid PDF extraction, Tesseract OCR, deskewed spatial clustering, structured field extraction. | `pymupdf`, `pytesseract`, `Pillow` | **Implemented** |
-| `documind.validation` | Syntactic schema validation (Phase 4 implemented) and semantic business rules (arithmetic integrity, duplicate checks). | `pydantic`, business rule engines | Phase 5 |
-| `documind.matching` | Vendor and PO reconciliation against reference records. | Fuzzy string matching, normalization | Future |
-| `documind.review` | State transitions (pending, approved, rejected, corrected), audit trail logging. | Data classes, state management | Phase 5 |
+| `documind.validation` | Deterministic business validation: arithmetic integrity, completeness, duplicate detection, reference matching. | `Decimal`, Pydantic models, string distance | **Implemented** |
+| `documind.matching` | Vendor and PO reconciliation against reference records (integrated in `documind.validation`). | Exact & normalized matching | **Implemented** |
+| `documind.review` | State transitions (pending, approved, rejected, corrected), audit trail logging. | Data classes, state management | Phase 6 |
 | `documind.reporting` | Exporting verified invoice records to structured formats (CSV, JSON). | `pandas`, standard library `json` | Phase 6 |
 | `app` | Streamlit web application providing UI for upload, verification, and inspection. | `streamlit` | Ingestion & Extraction Demo Active |
 
@@ -118,3 +145,4 @@ flowchart TD
 - **ADR 0002**: Secure Ingestion and Synthetic Dataset Architecture (`docs/decisions/0002-ingestion-and-dataset-architecture.md`).
 - **ADR 0003**: Hybrid PDF Text Extraction & OCR Pipeline (`docs/decisions/0003-extraction-pipeline.md`).
 - **ADR 0004**: Structured Invoice Field Extraction & Evidence Grounding (`docs/decisions/0004-structured-extraction-and-evidence-mapping.md`).
+- **ADR 0005**: Deterministic Business Rule Validation, Arithmetic Consistency & Discrepancy Detection (`docs/decisions/0005-business-rule-validation-and-discrepancies.md`).

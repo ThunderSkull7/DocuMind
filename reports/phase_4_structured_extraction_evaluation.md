@@ -1,7 +1,9 @@
 # DocuMind Phase 4 — Structured Invoice Field Extraction & Evidence Evaluation Report
 
-**Evaluation Date**: 2026-11-08  
-**DocuMind Version**: 0.1.0  
+**Evaluation Date**: 2026-11-08
+
+**DocuMind Version**: 0.1.0
+
 **Evaluation Scope**: 50 Synthetic Documents (30 Digital Vector PDFs, 20 Scanned Image PDFs)
 
 ---
@@ -21,7 +23,7 @@ Phase 4 implements deterministic, explainable structured field extraction and ev
 | **Subtotal Amount** | **30/30** (100.0%) | **20/20** (100.0%) | **50/50** (100.0%) |
 | **Tax Amount** | **30/30** (100.0%) | **20/20** (100.0%) | **50/50** (100.0%) |
 | **Total Amount** | **30/30** (100.0%) | **20/20** (100.0%) | **50/50** (100.0%) |
-| **Total Line Items** | **64 items** | **40 items** | **104 items** |
+| **Total Line Items** | **60 items** | **40 items** | **100 items** |
 | **Evidence Box Validity** | **100.0%** (348/348) | **100.0%** (232/232) | **100.0%** (100.0%) |
 | **Pydantic Schema Pass** | **28/30** (93.3%) | **19/20** (95.0%) | **47/50** (94.0%) |
 

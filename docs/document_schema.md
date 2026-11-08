@@ -124,3 +124,59 @@ Each processed invoice yields an `InvoiceExtractionRecord`:
 - `validation_errors`: Detailed list of Pydantic validation errors if validation failed.
 - `review_status`: State enumeration (`approved`, `needs_review`, `pending`, `rejected`, `corrected`).
 - `warnings`: Document-level non-fatal extraction warnings.
+
+---
+
+## 5. Business Validation & Discrepancy Models (Phase 5)
+
+Phase 5 introduces comprehensive audit and discrepancy models residing in `documind.validation.models`:
+
+### 5.1 Validation Status Taxonomy (`OverallValidationStatus`)
+- `VALID`: Document satisfies all arithmetic, completeness, temporal, duplicate, and reference checks.
+- `VALID_WITH_WARNINGS`: Document passed core validations but has informational or medium notices (e.g. ambiguous date format, confusable glyph characters).
+- `NEEDS_REVIEW`: High-severity discrepancy detected (e.g. arithmetic line/total mismatch, duplicate invoice number across vendors).
+- `INVALID`: Critical failure detected that prevents accounting processing (e.g. missing invoice number or vendor name).
+- `INDETERMINATE`: Missing core fields preclude reliable evaluation of other business rules.
+
+### 5.2 Discrepancy Model (`Discrepancy`)
+Every detected inconsistency produces an explainable, grounded discrepancy record:
+
+```json
+{
+  "discrepancy_id": "DISC-ARITH-003-DOC-SYN-015",
+  "document_id": "DOC-SYN-015",
+  "rule_id": "ARITH_003",
+  "rule_name": "Invoice Total Arithmetic Consistency",
+  "category": "arithmetic",
+  "severity": "high",
+  "outcome": "fail",
+  "affected_fields": ["subtotal", "tax_amount", "discount_amount", "shipping_amount", "total"],
+  "expected_value": "1716.00",
+  "actual_value": "1766.00",
+  "difference": "50.00",
+  "explanation": "Calculated total (1560.00 + 156.00 + 0.00 - 0.00 = 1716.00) does not match stated invoice total (1766.00). Difference: +50.00",
+  "evidence_references": ["subtotal", "tax_amount", "total"],
+  "evidence_snippets": [
+    {
+      "field": "total",
+      "text": "1766.00",
+      "bounding_box": [480.0, 482.0, 525.0, 494.0],
+      "page_number": 1,
+      "source_method": "native_text"
+    }
+  ],
+  "suggested_action": "Verify line items and tax calculations with vendor."
+}
+```
+
+### 5.3 Validation Result Summary (`ValidationResult`)
+Encapsulates all evaluation findings for an invoice:
+- `document_id`: Document identifier.
+- `overall_status`: Calculated `OverallValidationStatus`.
+- `discrepancies`: List of all `Discrepancy` instances.
+- `duplicate_check`: Optional `DuplicateCheckResult` describing matching records and similarity scores.
+- `reference_matches`: List of `ReferenceMatchResult` objects (vendor master and PO reconciliation).
+- `evaluated_rules_count`: Total number of distinct validation rules evaluated.
+- `passed_rules_count`: Number of rules that passed.
+- `failed_rules_count`: Number of rules that produced failures or warnings.
+
