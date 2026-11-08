@@ -117,6 +117,31 @@ The validation layer guarantees:
 3. **Multi-Tier Duplicate Screening**: Detects exact file hash duplicates (`DUP_000`), exact vendor-invoice duplicates (`DUP_001`), potential duplicates (`DUP_002`), and cross-vendor collisions (`DUP_003`).
 4. **Non-Destructive Execution**: Validation outputs audit objects without mutating original extraction records or dropping files.
 
+### 3.3 Human Review Workflow & Audit Trail Architecture (Phase 6)
+
+```mermaid
+flowchart TD
+    ValResult["ValidationResult (Phase 5)"] --> ReviewService["ReviewService (Orchestrator)"]
+    ExtRec["InvoiceExtractionRecord (Phase 4)"] --> ReviewService
+    
+    ReviewService --> StateMachine["State Machine (PERMITTED_TRANSITIONS)"]
+    ReviewService --> CorrMgr["Field Correction Manager"]
+    ReviewService --> Gateways["Verification Gateways (Blocking Invalids)"]
+    ReviewService --> Concurrency["Optimistic Concurrency Control (revision: int)"]
+    
+    CorrMgr --> Reval["Phase 5 Re-Validation on Corrected View"]
+    Reval --> CorrectedView["CorrectedDocumentView (Isolated from Original)"]
+    
+    ReviewService --> Audit["AuditTrail (Append-Only Event Log)"]
+    Audit --> AuditEvents["Immutable AuditEvent Sequence"]
+```
+
+The review architecture guarantees:
+1. **Strict Data Isolation**: Original extraction records and spatial bounding-box evidence are immutable.
+2. **Deterministic State Machine**: 6 states (`PENDING`, `IN_REVIEW`, `CORRECTION_REQUESTED`, `APPROVED`, `REJECTED`, `RETURNED_FOR_REVIEW`) with rejection of invalid transitions.
+3. **Verification Gateways**: Prevents approving documents with unresolved critical discrepancies or invalid states until corrected.
+4. **Append-Only Audit Trail**: Every decision, correction, assignment, and state transition produces an immutable `AuditEvent`.
+
 ---
 
 ## 4. Component Responsibilities
@@ -133,8 +158,8 @@ The validation layer guarantees:
 | `documind.extraction` | Hybrid PDF extraction, Tesseract OCR, deskewed spatial clustering, structured field extraction. | `pymupdf`, `pytesseract`, `Pillow` | **Implemented** |
 | `documind.validation` | Deterministic business validation: arithmetic integrity, completeness, duplicate detection, reference matching. | `Decimal`, Pydantic models, string distance | **Implemented** |
 | `documind.matching` | Vendor and PO reconciliation against reference records (integrated in `documind.validation`). | Exact & normalized matching | **Implemented** |
-| `documind.review` | State transitions (pending, approved, rejected, corrected), audit trail logging. | Data classes, state management | Phase 6 |
-| `documind.reporting` | Exporting verified invoice records to structured formats (CSV, JSON). | `pandas`, standard library `json` | Phase 6 |
+| `documind.review` | Human review lifecycle, non-destructive field corrections, verification gateways, append-only audit trail. | Finite state machines, Pydantic, optimistic locking | **Implemented** |
+| `documind.reporting` | Exporting verified invoice records to structured formats (CSV, JSON). | `pandas`, standard library `json` | Phase 7 |
 | `app` | Streamlit web application providing UI for upload, verification, and inspection. | `streamlit` | Ingestion & Extraction Demo Active |
 
 ---
@@ -146,3 +171,4 @@ The validation layer guarantees:
 - **ADR 0003**: Hybrid PDF Text Extraction & OCR Pipeline (`docs/decisions/0003-extraction-pipeline.md`).
 - **ADR 0004**: Structured Invoice Field Extraction & Evidence Grounding (`docs/decisions/0004-structured-extraction-and-evidence-mapping.md`).
 - **ADR 0005**: Deterministic Business Rule Validation, Arithmetic Consistency & Discrepancy Detection (`docs/decisions/0005-business-rule-validation-and-discrepancies.md`).
+- **ADR 0006**: Human Review Workflow, Non-Destructive Corrections & Append-Only Audit Trail (`docs/decisions/0006-human-review-and-audit-trail.md`).

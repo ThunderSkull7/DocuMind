@@ -30,7 +30,7 @@ class ArithmeticValidator:
         doc_id = record.document_id
 
         subtotal: Decimal | None = rf.get("subtotal")
-        tax: Decimal | None = rf.get("tax")
+        tax: Decimal | None = rf.get("tax") if rf.get("tax") is not None else rf.get("tax_amount")
         total: Decimal | None = rf.get("total")
         shipping: Decimal | None = rf.get("shipping_amount")
         discount: Decimal | None = rf.get("discount_amount")

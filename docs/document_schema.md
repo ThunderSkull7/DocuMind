@@ -180,3 +180,53 @@ Encapsulates all evaluation findings for an invoice:
 - `passed_rules_count`: Number of rules that passed.
 - `failed_rules_count`: Number of rules that produced failures or warnings.
 
+---
+
+## 6. Human Review & Audit Trail Models (Phase 6)
+
+Phase 6 introduces domain models in `documind.review.models` and `documind.review.audit` governing the human review workflow:
+
+### 6.1 Review Lifecycle Status (`ReviewStatus`)
+- `PENDING`: Initial status awaiting reviewer assignment or initiation.
+- `IN_REVIEW`: Actively assigned and under examination by a human reviewer.
+- `CORRECTION_REQUESTED`: Clarifications or corrections submitted by reviewer.
+- `APPROVED`: Document approved; all verification gateways passed.
+- `REJECTED`: Document rejected (e.g. invalid, duplicate, fraudulent).
+- `RETURNED_FOR_REVIEW`: Re-review or escalation initiated.
+
+### 6.2 Review Record (`ReviewRecord`)
+- `review_id`: Unique deterministic identifier (`REV-XXXXXXXX`).
+- `document_id`: Associated document identifier.
+- `extraction_reference`: Identifier or filename of source extraction.
+- `validation_result_id`: Identifier of original Phase 5 validation report.
+- `initial_validation_status`: Original `OverallValidationStatus`.
+- `status`: Current `ReviewStatus`.
+- `assigned_reviewer`: Reviewer user identifier.
+- `revision`: Monotonic revision counter for optimistic concurrency.
+- `decisions`: Historical list of reviewer `ReviewDecision` objects.
+- `corrections`: Historical list of `FieldCorrection` objects.
+- `corrected_view`: Optional `CorrectedDocumentView` synthesizing accepted corrections and validation re-runs.
+
+### 6.3 Field Correction Model (`FieldCorrection`)
+- `correction_id`: Unique identifier (`CORR-XXXXXXXX`).
+- `field_name`: Canonical invoice schema field being corrected.
+- `original_value`: Original extracted value from document.
+- `corrected_value`: Reviewer-supplied value.
+- `reason`: Mandatory reviewer rationale ($\ge 3$ characters).
+- `evidence_references`: List of valid `FieldEvidence` keys supporting the correction.
+- `reviewer`: Proposing reviewer username.
+- `status`: `PROPOSED`, `ACCEPTED`, `REJECTED`, or `SUPERSEDED`.
+- `is_reviewer_supplied`: Boolean flag indicating manual entry without document bounding-box evidence.
+
+### 6.4 Append-Only Audit Event (`AuditEvent`)
+- `event_id`: Unique identifier (`EVT-XXXXXXXXXX`).
+- `document_id`: Document identifier.
+- `review_id`: Review identifier.
+- `event_type`: Categorization (`REVIEW_CREATED`, `REVIEW_ASSIGNED`, `REVIEW_STARTED`, `DECISION_SUBMITTED`, `CORRECTION_PROPOSED`, `CORRECTION_ACCEPTED`, `CORRECTION_REJECTED`, `REVIEW_RETURNED`, `DOCUMENT_APPROVED`, `DOCUMENT_REJECTED`, `REREVIEW_INITIATED`).
+- `actor`: Non-empty username or system actor.
+- `timestamp`: UTC timestamp.
+- `previous_state` & `new_state`: Workflow transition state snapshot.
+- `affected_fields`: Schema fields affected.
+- `details`: Contextual metadata dictionary.
+
+

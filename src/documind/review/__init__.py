@@ -1,13 +1,33 @@
-"""Review module for DocuMind.
+"""Human review and audit trail subsystem for DocuMind.
 
-Architectural Responsibility:
-- Manage document review lifecycle (pending, flagged, approved, rejected).
-- Provide data models and handlers for human user corrections.
-- Maintain an audit trail recording original extracted value, corrected value,
-  reviewer identity, and timestamp.
-- Track human correction rates to support extraction evaluation.
-
-Implementation is scheduled for later phases.
+Provides domain models, workflow orchestration, non-destructive field corrections,
+verification gateways, and append-only audit event logging for invoice review.
 """
 
-__all__: list[str] = []
+from documind.review.audit import AuditEvent, AuditEventType, AuditTrail
+from documind.review.models import (
+    PERMITTED_TRANSITIONS,
+    CorrectedDocumentView,
+    CorrectionStatus,
+    FieldCorrection,
+    ReviewDecision,
+    ReviewDecisionType,
+    ReviewRecord,
+    ReviewStatus,
+)
+from documind.review.service import ReviewService
+
+__all__ = [
+    "PERMITTED_TRANSITIONS",
+    "AuditEvent",
+    "AuditEventType",
+    "AuditTrail",
+    "CorrectedDocumentView",
+    "CorrectionStatus",
+    "FieldCorrection",
+    "ReviewDecision",
+    "ReviewDecisionType",
+    "ReviewRecord",
+    "ReviewService",
+    "ReviewStatus",
+]

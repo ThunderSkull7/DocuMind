@@ -46,3 +46,4 @@ The validation subsystem must be deterministic, explainable, reproducible, and s
 ## Consequences
 - **Positive**: Complete financial audit trail; 100% reproducible discrepancies; precise bounding box links in UI for human reviewer inspection; transparent separation of extraction from business logic.
 - **Negative**: High-skew OCR text may trigger arithmetic mismatches if an OCR digit is misrecognized, requiring human review; however, this is the desired behavior for financial risk mitigation.
+

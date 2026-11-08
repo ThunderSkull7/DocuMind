@@ -107,5 +107,29 @@ class ReviewError(DocuMindError):
     """Raised during human review, correction submission, or state transition."""
 
 
+class InvalidStateTransitionError(ReviewError):
+    """Raised when an illegal review state transition is attempted."""
+
+
+class ReviewConcurrencyError(ReviewError):
+    """Raised when an update conflicts with the current review revision (optimistic locking)."""
+
+
+class ReviewNotFoundError(ReviewError):
+    """Raised when a requested review record cannot be found."""
+
+
+class DuplicateActiveReviewError(ReviewError):
+    """Raised when attempting to create a second active review for a document."""
+
+
+class InvalidCorrectionError(ReviewError):
+    """Raised when a proposed field correction fails validation or reason requirements."""
+
+
+class UnresolvedDiscrepancyError(ReviewError):
+    """Raised when approval is attempted on a document with blocking unresolved discrepancies."""
+
+
 class ReportingError(DocuMindError):
     """Raised when export or report generation fails."""

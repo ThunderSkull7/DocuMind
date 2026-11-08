@@ -84,7 +84,23 @@ Evaluates the deterministic validation subsystem across all 50 documents, measur
 
 ---
 
-## 5. Evaluation Execution & Quality Gates
+## 5. Human Review & Audit Trail Metrics (Phase 6 Implemented)
+
+Evaluates the deterministic human review workflow, verification gateways, field-level corrections, and append-only audit trail:
+
+### 5.1 Verification Gateways & Approval Protection
+- **INVALID Status Gateway**: 100% of documents with critical missing fields (`DOC-SYN-007`, `DOC-SYN-018`, `DOC-SYN-035`) are prevented from approval until reviewer-supplied corrections are submitted and accepted.
+- **NEEDS_REVIEW Gateway**: 100% of arithmetic discrepancy documents (`DOC-SYN-015`, `DOC-SYN-041`) require either an accepted mathematical correction or an authorized override reason code with explanation before approval.
+- **Re-Validation Trigger**: Accepted corrections re-run Phase 5 validation on isolated `CorrectedDocumentView`, converting status from `NEEDS_REVIEW` to `VALID` upon mathematical correction.
+
+### 5.2 Concurrency & Audit Integrity
+- **Optimistic Concurrency**: Stale revision modifications trigger `ReviewConcurrencyError`.
+- **Duplicate Review Shield**: Active review instances block second active review creation (`DuplicateActiveReviewError`).
+- **Audit Immutability**: All review decisions, corrections, assignments, and transitions record frozen `AuditEvent` models in an append-only log.
+
+---
+
+## 6. Evaluation Execution & Quality Gates
 
 Run the comprehensive evaluation suite via CLI:
 
@@ -96,3 +112,4 @@ Produces:
 1. `reports/phase_3_extraction_evaluation.md`: Routing decisions, OCR confidences, latencies, character densities.
 2. `reports/phase_4_structured_extraction_evaluation.md`: Structured accuracy, line-item counts, evidence box validity, schema pass rates.
 3. `reports/phase_5_validation_evaluation.md`: Business validation statuses, discrepancy distributions, rule catalogue performance, and edge-case classification.
+4. `reports/phase_6_review_evaluation.md`: Review workflow state transitions, correction versioning, re-validation gateways, and audit trail guarantees.
