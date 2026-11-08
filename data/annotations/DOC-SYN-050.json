@@ -1,0 +1,37 @@
+{
+  "document_id": "DOC-SYN-050",
+  "file_name": "syn_invoice_050_scanned.pdf",
+  "document_type": "scanned",
+  "invoice_number": "INV-2024-0050",
+  "invoice_date": "2024-03-01",
+  "vendor_name": "Crestview Media Solutions Ltd.",
+  "currency": "EUR",
+  "subtotal": "940.00",
+  "tax": "94.00",
+  "total": "1034.00",
+  "characteristics": {
+    "layout_template": "european_vat",
+    "page_count": 1,
+    "is_scanned": true,
+    "resolution_dpi": 200,
+    "rotation_degrees": 1.8,
+    "jpeg_quality": 45,
+    "contrast_factor": 1.05
+  },
+  "deliberately_introduced_issues": [
+    {
+      "issue_type": "scan_skew",
+      "field": null,
+      "description": "Scanned page rotated with 1.8 degrees skew",
+      "expected_extracted": null,
+      "ground_truth_actual": null
+    },
+    {
+      "issue_type": "scan_degradation",
+      "field": null,
+      "description": "Degraded image quality: DPI=200, JPEG quality=45",
+      "expected_extracted": null,
+      "ground_truth_actual": null
+    }
+  ]
+}

@@ -43,6 +43,8 @@ class Settings(BaseSettings):
     # Ingestion constraints
     max_upload_size_mb: int = Field(default=25, ge=1, le=100)
     allowed_mime_types: list[str] = Field(default_factory=lambda: ["application/pdf"])
+    max_page_count: int = Field(default=50, ge=1, le=1000)
+    allow_encrypted_pdfs: bool = Field(default=False)
 
     # OCR settings
     tesseract_cmd: str | None = None

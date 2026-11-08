@@ -1,0 +1,37 @@
+{
+  "document_id": "DOC-SYN-036",
+  "file_name": "syn_invoice_036_scanned.pdf",
+  "document_type": "scanned",
+  "invoice_number": "INV-2024-0036",
+  "invoice_date": "2024-01-23",
+  "vendor_name": "Apex Cloud Systems Inc.",
+  "currency": "EUR",
+  "subtotal": "650.00",
+  "tax": "65.00",
+  "total": "715.00",
+  "characteristics": {
+    "layout_template": "modern_tech",
+    "page_count": 1,
+    "is_scanned": true,
+    "resolution_dpi": 150,
+    "rotation_degrees": 0.5,
+    "jpeg_quality": 65,
+    "contrast_factor": 0.85
+  },
+  "deliberately_introduced_issues": [
+    {
+      "issue_type": "scan_skew",
+      "field": null,
+      "description": "Scanned page rotated with 0.5 degrees skew",
+      "expected_extracted": null,
+      "ground_truth_actual": null
+    },
+    {
+      "issue_type": "scan_degradation",
+      "field": null,
+      "description": "Degraded image quality: DPI=150, JPEG quality=65",
+      "expected_extracted": null,
+      "ground_truth_actual": null
+    }
+  ]
+}

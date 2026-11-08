@@ -1,0 +1,22 @@
+{
+  "document_id": "DOC-SYN-002",
+  "file_name": "syn_invoice_002_digital.pdf",
+  "document_type": "digital",
+  "invoice_number": "INV-2024-0002",
+  "invoice_date": "2024-03-05",
+  "vendor_name": "Crestview Media Solutions Ltd.",
+  "currency": "GBP",
+  "subtotal": "1335.00",
+  "tax": "133.50",
+  "total": "1468.50",
+  "characteristics": {
+    "layout_template": "corporate_classic",
+    "page_count": 1,
+    "is_scanned": false,
+    "resolution_dpi": 300,
+    "rotation_degrees": 0.0,
+    "jpeg_quality": null,
+    "contrast_factor": 1.0
+  },
+  "deliberately_introduced_issues": []
+}

@@ -53,74 +53,67 @@ flowchart TD
 
 ---
 
-## 3. Component Responsibilities
+## 3. Ingestion Subsystem Architecture (Phase 2 Implemented)
 
-| Component | Responsibility | Primary Technologies |
-| :--- | :--- | :--- |
-| `documind.config` | Centralized settings, path resolution, environment variable overrides. | `pydantic-settings`, `pathlib` |
-| `documind.logging` | Structured, sanitized logging preventing PII leakage. | Python standard `logging` |
-| `documind.exceptions` | Unified hierarchical error taxonomy. | Custom Python exceptions |
-| `documind.ingestion` | File upload validation, MIME checking, size bounds, safe unique storage. | Python standard library, `hashlib` |
-| `documind.extraction` | PDF text parsing, fallback to OCR on image-heavy/scanned pages, token grounding. | `pymupdf` (fitz), `pytesseract`, `Pillow` |
-| `documind.schemas` | Pydantic data models for invoice fields, evidence, and records. | `pydantic` |
-| `documind.validation` | Syntactic schema validation and semantic business rules (arithmetic integrity). | `pydantic`, business rule engines |
-| `documind.matching` | Vendor and PO reconciliation against reference records. | Fuzzy string matching, normalization |
-| `documind.review` | State transitions (pending, approved, rejected, corrected), audit trail logging. | Data classes, state management |
-| `documind.reporting` | Exporting verified invoice records to structured formats (CSV, JSON). | `pandas`, standard library `json` |
-| `app` | Streamlit web application providing UI for upload, verification, and inspection. | `streamlit` |
+The document ingestion subsystem is implemented under `src/documind/ingestion/` and coordinates file receipt, multi-gated validation, cryptographic fingerprinting, and atomic isolated storage.
+
+### 3.1 Ingestion Flowchart
+
+```mermaid
+flowchart TD
+    Start(["Incoming File Upload"]) --> ExtCheck{"Extension Check<br/>(.pdf?)"}
+    ExtCheck -- No --> RejectExt["Reject: UnsupportedFileTypeError"]
+    ExtCheck -- Yes --> SizeCheck{"Size Check<br/>(0 < size <= 25MB?)"}
+    SizeCheck -- No --> RejectSize["Reject: EmptyFileError / FileSizeExceededError"]
+    SizeCheck -- Yes --> MagicCheck{"Magic Header Check<br/>(%PDF- in header?)"}
+    MagicCheck -- No --> RejectMagic["Reject: FileSignatureError"]
+    MagicCheck -- Yes --> ParserCheck{"Structural Parser Check<br/>(PyMuPDF valid?)"}
+    ParserCheck -- Corrupt --> RejectParser["Reject: CorruptedPDFError"]
+    ParserCheck -- Success --> EncryptCheck{"Encryption Policy Check<br/>(is_encrypted?)"}
+    EncryptCheck -- Yes & Policy Block --> RejectEncrypt["Reject: EncryptedPDFError"]
+    EncryptCheck -- No / Allowed --> PageCheck{"Page Count Check<br/>(1 <= pages <= 50?)"}
+    PageCheck -- No --> RejectPages["Reject: PageCountExceededError"]
+    PageCheck -- Yes --> Sanitize["Sanitize Filename &<br/>Generate Document ID (UUIDv4)"]
+    Sanitize --> AtomicWrite["Atomic Storage Write<br/>(Write to .tmp then rename)"]
+    AtomicWrite --> GenMeta["Generate & Persist<br/>IngestionMetadata JSON"]
+    GenMeta --> Success(["Return IngestionResult: SUCCESS"])
+
+    RejectExt --> FailResult(["Return IngestionResult: REJECTED"])
+    RejectSize --> FailResult
+    RejectMagic --> FailResult
+    RejectParser --> FailResult
+    RejectEncrypt --> FailResult
+    RejectPages --> FailResult
+```
+
+### 3.2 Ingestion Metadata Lifecycle
+1. **Reception**: Document received as raw bytes, `Path`, or binary stream.
+2. **Validation**: Seven-point validation audit executed; fine-grained details recorded in `ValidationDetail`.
+3. **Fingerprinting**: 64-character SHA-256 cryptographic digest computed on uncompressed raw bytes.
+4. **Isolation**: File saved in `DOCUMIND_STORAGE_DIR / {document_id} / {sanitized_filename}`.
+5. **Metadata Persistence**: `IngestionMetadata` is serialized to `metadata.json` alongside the stored document for instant retrieval and provenance auditing.
 
 ---
 
-## 4. Processing Pipeline & Data Flow
+## 4. Component Responsibilities
 
-```mermaid
-sequenceDiagram
-    autonumber
-    actor User as User / Operator
-    participant App as Streamlit UI
-    participant Ingest as Ingestion Module
-    participant Extract as Extraction Module
-    participant Val as Validation Module
-    participant Review as Review Module
-    participant Export as Reporting Module
-
-    User->>App: Upload Invoice PDF
-    App->>Ingest: Stream File Bytes
-    Ingest->>Ingest: Validate MIME, Size & Header
-    Ingest->>Ingest: Store safely with UUID
-    Ingest->>Extract: Hand off document reference
-    Extract->>Extract: Extract native text (PyMuPDF)
-    alt Text density below threshold
-        Extract->>Extract: Trigger OCR Fallback (Tesseract)
-    end
-    Extract->>Extract: Tokenize & Extract Structured Fields + Bounding Boxes
-    Extract->>Val: Pass extracted data & evidence
-    Val->>Val: Run Pydantic Schema Validation
-    Val->>Val: Run Business Rules (subtotal + tax == total)
-    Val->>Review: Populate InvoiceExtractionRecord
-    Review->>App: Render Invoice Preview with Highlighted Evidence
-    User->>App: Verify / Correct Fields & Approve
-    App->>Review: Commit Correction & State Change
-    Review->>Export: Trigger Export
-    Export-->>User: Download Verified CSV / JSON
-```
+| Component | Responsibility | Primary Technologies | Status |
+| :--- | :--- | :--- | :--- |
+| `documind.config` | Centralized settings, path resolution, environment variable overrides. | `pydantic-settings`, `pathlib` | **Implemented** |
+| `documind.logging` | Structured, sanitized logging preventing PII leakage. | Python standard `logging` | **Implemented** |
+| `documind.exceptions` | Unified hierarchical error taxonomy. | Custom Python exceptions | **Implemented** |
+| `documind.dataset` | Deterministic synthetic invoice corpus generation (50 docs) & gold annotations. | `pymupdf`, `Pillow`, `pydantic` | **Implemented** |
+| `documind.ingestion` | File upload validation, MIME checking, size bounds, safe unique atomic storage. | `pymupdf`, `hashlib`, standard library | **Implemented** |
+| `documind.schemas` | Pydantic data models for invoice fields, evidence, and records. | `pydantic` | **Implemented** |
+| `documind.validation` | Syntactic schema validation and semantic business rules (arithmetic integrity). | `pydantic`, business rule engines | Phase 4 |
+| `documind.matching` | Vendor and PO reconciliation against reference records. | Fuzzy string matching, normalization | Future |
+| `documind.review` | State transitions (pending, approved, rejected, corrected), audit trail logging. | Data classes, state management | Phase 5 |
+| `documind.reporting` | Exporting verified invoice records to structured formats (CSV, JSON). | `pandas`, standard library `json` | Phase 6 |
+| `app` | Streamlit web application providing UI for upload, verification, and inspection. | `streamlit` | Ingestion Demo Active |
 
 ---
 
 ## 5. Architectural Decisions & Rationale
 
-### ADR-01: Modular Monolith vs. Distributed Microservices
-- **Decision**: Implement DocuMind as a clean, modular Python monolith.
-- **Rationale**: For document extraction and verification workflows at this stage, microservices introduce excessive network latency, deployment overhead, and serialization costs without architectural justification. In-process function calls allow direct passing of rich memory structures (e.g. bounding box matrices and PyMuPDF page objects).
-
-### ADR-02: PyMuPDF for Native Digital PDF Extraction
-- **Decision**: Use `pymupdf` (MuPDF C bindings) for native text and coordinate extraction.
-- **Rationale**: PyMuPDF is orders of magnitude faster than pure Python alternatives (like `pypdf`), delivers precise character- and word-level bounding boxes, handles complex font encodings accurately, and renders high-fidelity page images for OCR.
-
-### ADR-03: Tesseract OCR as Local Fallback Engine
-- **Decision**: Integrate Tesseract via `pytesseract` as an on-premise, privacy-safe OCR fallback.
-- **Rationale**: Keeps the pipeline fully offline and self-contained, avoiding vendor lock-in or recurring cloud API costs while maintaining zero external data leakage for confidential invoice documents.
-
-### ADR-04: Two-Tier Validation (Schema + Business Rules)
-- **Decision**: Separate structural schema compliance (types, lengths, required fields) from domain business logic (arithmetic relationships, date boundaries).
-- **Rationale**: Structural failures indicate extraction parsing faults, whereas business rule discrepancies highlight actual invoice disputes or arithmetic issues requiring human review.
+- **ADR 0001**: Initial Architecture and Foundation Selection (`docs/decisions/0001-initial-architecture.md`).
+- **ADR 0002**: Secure Ingestion and Synthetic Dataset Architecture (`docs/decisions/0002-ingestion-and-dataset-architecture.md`).

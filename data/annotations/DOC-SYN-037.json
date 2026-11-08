@@ -1,0 +1,30 @@
+{
+  "document_id": "DOC-SYN-037",
+  "file_name": "syn_invoice_037_scanned.pdf",
+  "document_type": "scanned",
+  "invoice_number": "INV-2024-0037",
+  "invoice_date": "2024-02-25",
+  "vendor_name": "Beacon Logistics GmbH",
+  "currency": "GBP",
+  "subtotal": "590.00",
+  "tax": "59.00",
+  "total": "649.00",
+  "characteristics": {
+    "layout_template": "corporate_classic",
+    "page_count": 1,
+    "is_scanned": true,
+    "resolution_dpi": 300,
+    "rotation_degrees": -2.5,
+    "jpeg_quality": 80,
+    "contrast_factor": 1.05
+  },
+  "deliberately_introduced_issues": [
+    {
+      "issue_type": "scan_skew",
+      "field": null,
+      "description": "Scanned page rotated with -2.5 degrees skew",
+      "expected_extracted": null,
+      "ground_truth_actual": null
+    }
+  ]
+}

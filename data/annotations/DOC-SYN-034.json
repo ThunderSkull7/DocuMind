@@ -1,0 +1,30 @@
+{
+  "document_id": "DOC-SYN-034",
+  "file_name": "syn_invoice_034_scanned.pdf",
+  "document_type": "scanned",
+  "invoice_number": "INV-2024-0034",
+  "invoice_date": "2024-11-19",
+  "vendor_name": "Epsilon Software Labs",
+  "currency": "GBP",
+  "subtotal": "800.00",
+  "tax": "80.00",
+  "total": "880.00",
+  "characteristics": {
+    "layout_template": "professional_services",
+    "page_count": 1,
+    "is_scanned": true,
+    "resolution_dpi": 200,
+    "rotation_degrees": 1.8,
+    "jpeg_quality": 65,
+    "contrast_factor": 1.05
+  },
+  "deliberately_introduced_issues": [
+    {
+      "issue_type": "scan_skew",
+      "field": null,
+      "description": "Scanned page rotated with 1.8 degrees skew",
+      "expected_extracted": null,
+      "ground_truth_actual": null
+    }
+  ]
+}

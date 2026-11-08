@@ -35,6 +35,34 @@ class FileSizeExceededError(IngestionError):
     """Raised when an uploaded document exceeds the maximum allowable size."""
 
 
+class EmptyFileError(IngestionError):
+    """Raised when an ingested document is 0 bytes."""
+
+
+class FileSignatureError(IngestionError):
+    """Raised when the binary file signature (magic bytes) does not match the expected format."""
+
+
+class CorruptedPDFError(IngestionError):
+    """Raised when a PDF file is structurally malformed or unparseable."""
+
+
+class EncryptedPDFError(IngestionError):
+    """Raised when an ingested PDF is password-protected or encrypted contrary to policy."""
+
+
+class PageCountExceededError(IngestionError):
+    """Raised when an ingested PDF exceeds the maximum permitted page count."""
+
+
+class StorageError(IngestionError):
+    """Raised when a filesystem or storage operation fails."""
+
+
+class PathTraversalError(StorageError):
+    """Raised when an uploaded filename or path contains traversal sequences."""
+
+
 class ExtractionError(DocuMindError):
     """Base exception for extraction failures (native PDF text, OCR, parsing)."""
 

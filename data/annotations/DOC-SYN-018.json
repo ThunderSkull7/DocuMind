@@ -1,0 +1,30 @@
+{
+  "document_id": "DOC-SYN-018",
+  "file_name": "syn_invoice_018_digital.pdf",
+  "document_type": "digital",
+  "invoice_number": "INV-2024-0018",
+  "invoice_date": "2024-07-12",
+  "vendor_name": null,
+  "currency": "USD",
+  "subtotal": "445.50",
+  "tax": "44.55",
+  "total": "490.05",
+  "characteristics": {
+    "layout_template": "telecom_utility",
+    "page_count": 1,
+    "is_scanned": false,
+    "resolution_dpi": 300,
+    "rotation_degrees": 0.0,
+    "jpeg_quality": null,
+    "contrast_factor": 1.0
+  },
+  "deliberately_introduced_issues": [
+    {
+      "issue_type": "missing_field",
+      "field": "vendor_name",
+      "description": "Vendor corporate entity name omitted from header",
+      "expected_extracted": null,
+      "ground_truth_actual": null
+    }
+  ]
+}

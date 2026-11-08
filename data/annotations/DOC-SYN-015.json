@@ -1,0 +1,30 @@
+{
+  "document_id": "DOC-SYN-015",
+  "file_name": "syn_invoice_015_digital.pdf",
+  "document_type": "digital",
+  "invoice_number": "INV-2024-0015",
+  "invoice_date": "2024-04-06",
+  "vendor_name": "Delta Office Furnishings Co.",
+  "currency": "EUR",
+  "subtotal": "1560.00",
+  "tax": "156.00",
+  "total": "1766.00",
+  "characteristics": {
+    "layout_template": "european_vat",
+    "page_count": 1,
+    "is_scanned": false,
+    "resolution_dpi": 300,
+    "rotation_degrees": 0.0,
+    "jpeg_quality": null,
+    "contrast_factor": 1.0
+  },
+  "deliberately_introduced_issues": [
+    {
+      "issue_type": "arithmetic_mismatch",
+      "field": "total",
+      "description": "Total amount on document intentionally does not equal subtotal + tax",
+      "expected_extracted": "1766.00",
+      "ground_truth_actual": "1716.00"
+    }
+  ]
+}

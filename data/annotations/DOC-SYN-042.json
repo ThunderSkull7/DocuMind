@@ -1,0 +1,37 @@
+{
+  "document_id": "DOC-SYN-042",
+  "file_name": "syn_invoice_042_scanned.pdf",
+  "document_type": "scanned",
+  "invoice_number": "INV-2024-0042",
+  "invoice_date": "2024-07-10",
+  "vendor_name": "Apex Cloud Systems Inc.",
+  "currency": "EUR",
+  "subtotal": "1335.00",
+  "tax": "133.50",
+  "total": "1468.50",
+  "characteristics": {
+    "layout_template": "corporate_classic",
+    "page_count": 1,
+    "is_scanned": true,
+    "resolution_dpi": 150,
+    "rotation_degrees": 1.8,
+    "jpeg_quality": 65,
+    "contrast_factor": 0.85
+  },
+  "deliberately_introduced_issues": [
+    {
+      "issue_type": "scan_skew",
+      "field": null,
+      "description": "Scanned page rotated with 1.8 degrees skew",
+      "expected_extracted": null,
+      "ground_truth_actual": null
+    },
+    {
+      "issue_type": "scan_degradation",
+      "field": null,
+      "description": "Degraded image quality: DPI=150, JPEG quality=65",
+      "expected_extracted": null,
+      "ground_truth_actual": null
+    }
+  ]
+}

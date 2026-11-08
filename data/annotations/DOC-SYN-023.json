@@ -1,0 +1,30 @@
+{
+  "document_id": "DOC-SYN-023",
+  "file_name": "syn_invoice_023_digital.pdf",
+  "document_type": "digital",
+  "invoice_number": "INV-2024-0023",
+  "invoice_date": "2024-12-22",
+  "vendor_name": "Fjord Nordic Maritime Services",
+  "currency": "GBP",
+  "subtotal": "1140.00",
+  "tax": "114.00",
+  "total": "1254.00",
+  "characteristics": {
+    "layout_template": "telecom_utility",
+    "page_count": 1,
+    "is_scanned": false,
+    "resolution_dpi": 300,
+    "rotation_degrees": 0.0,
+    "jpeg_quality": null,
+    "contrast_factor": 1.0
+  },
+  "deliberately_introduced_issues": [
+    {
+      "issue_type": "ambiguous_date",
+      "field": "invoice_date",
+      "description": "Date formatted as 03/04/2024 (ambiguous between March 4 and April 3)",
+      "expected_extracted": "03/04/2024",
+      "ground_truth_actual": "2024-03-04"
+    }
+  ]
+}

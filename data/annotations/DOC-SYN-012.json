@@ -1,0 +1,30 @@
+{
+  "document_id": "DOC-SYN-012",
+  "file_name": "syn_invoice_012_digital.pdf",
+  "document_type": "digital",
+  "invoice_number": "INV-2024-0012",
+  "invoice_date": "2024-01-25",
+  "vendor_name": "Apex Cloud Systems Inc.",
+  "currency": "USD",
+  "subtotal": "1335.00",
+  "tax": null,
+  "total": "1335.00",
+  "characteristics": {
+    "layout_template": "corporate_classic",
+    "page_count": 1,
+    "is_scanned": false,
+    "resolution_dpi": 300,
+    "rotation_degrees": 0.0,
+    "jpeg_quality": null,
+    "contrast_factor": 1.0
+  },
+  "deliberately_introduced_issues": [
+    {
+      "issue_type": "missing_field",
+      "field": "tax",
+      "description": "Tax amount omitted; tax is zero or exempt",
+      "expected_extracted": null,
+      "ground_truth_actual": null
+    }
+  ]
+}

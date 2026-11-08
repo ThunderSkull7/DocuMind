@@ -1,0 +1,30 @@
+{
+  "document_id": "DOC-SYN-030",
+  "file_name": "syn_invoice_030_digital.pdf",
+  "document_type": "digital",
+  "invoice_number": "INV-2024-DUP999",
+  "invoice_date": "2024-07-11",
+  "vendor_name": "Apex Cloud Systems Inc.",
+  "currency": "EUR",
+  "subtotal": "940.00",
+  "tax": "94.00",
+  "total": "1034.00",
+  "characteristics": {
+    "layout_template": "european_vat",
+    "page_count": 1,
+    "is_scanned": false,
+    "resolution_dpi": 300,
+    "rotation_degrees": 0.0,
+    "jpeg_quality": null,
+    "contrast_factor": 1.0
+  },
+  "deliberately_introduced_issues": [
+    {
+      "issue_type": "duplicate_identifier",
+      "field": "invoice_number",
+      "description": "Shared duplicate invoice number identifier between DOC-SYN-030 and DOC-SYN-045",
+      "expected_extracted": "INV-2024-DUP999",
+      "ground_truth_actual": "INV-2024-DUP999"
+    }
+  ]
+}

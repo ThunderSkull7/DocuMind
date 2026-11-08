@@ -1,0 +1,30 @@
+{
+  "document_id": "DOC-SYN-007",
+  "file_name": "syn_invoice_007_digital.pdf",
+  "document_type": "digital",
+  "invoice_number": null,
+  "invoice_date": "2024-08-15",
+  "vendor_name": "Beacon Logistics GmbH",
+  "currency": "EUR",
+  "subtotal": "590.00",
+  "tax": "59.00",
+  "total": "649.00",
+  "characteristics": {
+    "layout_template": "corporate_classic",
+    "page_count": 1,
+    "is_scanned": false,
+    "resolution_dpi": 300,
+    "rotation_degrees": 0.0,
+    "jpeg_quality": null,
+    "contrast_factor": 1.0
+  },
+  "deliberately_introduced_issues": [
+    {
+      "issue_type": "missing_field",
+      "field": "invoice_number",
+      "description": "Invoice number omitted intentionally from document header",
+      "expected_extracted": null,
+      "ground_truth_actual": null
+    }
+  ]
+}

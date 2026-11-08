@@ -1,0 +1,22 @@
+{
+  "document_id": "DOC-SYN-009",
+  "file_name": "syn_invoice_009_digital.pdf",
+  "document_type": "digital",
+  "invoice_number": "INV-2024-0009",
+  "invoice_date": "2024-10-19",
+  "vendor_name": "Delta Office Furnishings Co.",
+  "currency": "USD",
+  "subtotal": "345.00",
+  "tax": "34.50",
+  "total": "379.50",
+  "characteristics": {
+    "layout_template": "professional_services",
+    "page_count": 1,
+    "is_scanned": false,
+    "resolution_dpi": 300,
+    "rotation_degrees": 0.0,
+    "jpeg_quality": null,
+    "contrast_factor": 1.0
+  },
+  "deliberately_introduced_issues": []
+}

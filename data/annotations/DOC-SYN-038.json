@@ -1,0 +1,37 @@
+{
+  "document_id": "DOC-SYN-038",
+  "file_name": "syn_invoice_038_scanned.pdf",
+  "document_type": "scanned",
+  "invoice_number": "INV-2024-0038",
+  "invoice_date": "2024-03-02",
+  "vendor_name": "Crestview Media Solutions Ltd.",
+  "currency": "USD",
+  "subtotal": "445.50",
+  "tax": null,
+  "total": "445.50",
+  "characteristics": {
+    "layout_template": "telecom_utility",
+    "page_count": 1,
+    "is_scanned": true,
+    "resolution_dpi": 200,
+    "rotation_degrees": 1.8,
+    "jpeg_quality": 65,
+    "contrast_factor": 1.05
+  },
+  "deliberately_introduced_issues": [
+    {
+      "issue_type": "scan_skew",
+      "field": null,
+      "description": "Scanned page rotated with 1.8 degrees skew",
+      "expected_extracted": null,
+      "ground_truth_actual": null
+    },
+    {
+      "issue_type": "missing_field",
+      "field": "tax",
+      "description": "Scanned invoice with zero/omitted tax breakdown",
+      "expected_extracted": null,
+      "ground_truth_actual": null
+    }
+  ]
+}

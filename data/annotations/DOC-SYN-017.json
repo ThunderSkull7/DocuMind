@@ -1,0 +1,22 @@
+{
+  "document_id": "DOC-SYN-017",
+  "file_name": "syn_invoice_017_digital.pdf",
+  "document_type": "digital",
+  "invoice_number": "INV-2024-0017",
+  "invoice_date": "2024-06-10",
+  "vendor_name": "Fjord Nordic Maritime Services",
+  "currency": "GBP",
+  "subtotal": "590.00",
+  "tax": "59.00",
+  "total": "649.00",
+  "characteristics": {
+    "layout_template": "corporate_classic",
+    "page_count": 1,
+    "is_scanned": false,
+    "resolution_dpi": 300,
+    "rotation_degrees": 0.0,
+    "jpeg_quality": null,
+    "contrast_factor": 1.0
+  },
+  "deliberately_introduced_issues": []
+}

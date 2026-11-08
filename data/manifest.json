@@ -1,0 +1,960 @@
+{
+  "dataset_version": "1.0.0",
+  "created_at": "2026-11-08T03:12:21.325720Z",
+  "generation_seed": 42,
+  "total_documents": 50,
+  "digital_count": 30,
+  "scanned_count": 20,
+  "documents": [
+    {
+      "document_id": "DOC-SYN-001",
+      "file_name": "syn_invoice_001_digital.pdf",
+      "relative_path": "data/synthetic_documents/syn_invoice_001_digital.pdf",
+      "annotation_path": "data/annotations/DOC-SYN-001.json",
+      "sha256_hash": "31eaa484252c79cf7278c9ee55cf8bc5cb9f6bae18dc885a629b3b4e13f4af02",
+      "document_type": "digital",
+      "page_count": 1,
+      "characteristics": {
+        "layout_template": "modern_tech",
+        "page_count": 1,
+        "is_scanned": false,
+        "resolution_dpi": 300,
+        "rotation_degrees": 0.0,
+        "jpeg_quality": null,
+        "contrast_factor": 1.0
+      },
+      "issues_count": 0
+    },
+    {
+      "document_id": "DOC-SYN-002",
+      "file_name": "syn_invoice_002_digital.pdf",
+      "relative_path": "data/synthetic_documents/syn_invoice_002_digital.pdf",
+      "annotation_path": "data/annotations/DOC-SYN-002.json",
+      "sha256_hash": "0862bb881325dfe684c10df2858158c6ba6b1b57b518e60e1e84b7d8d7d88ce9",
+      "document_type": "digital",
+      "page_count": 1,
+      "characteristics": {
+        "layout_template": "corporate_classic",
+        "page_count": 1,
+        "is_scanned": false,
+        "resolution_dpi": 300,
+        "rotation_degrees": 0.0,
+        "jpeg_quality": null,
+        "contrast_factor": 1.0
+      },
+      "issues_count": 0
+    },
+    {
+      "document_id": "DOC-SYN-003",
+      "file_name": "syn_invoice_003_digital.pdf",
+      "relative_path": "data/synthetic_documents/syn_invoice_003_digital.pdf",
+      "annotation_path": "data/annotations/DOC-SYN-003.json",
+      "sha256_hash": "41d349645cb5c50779549ec276dabe36d1e9d4d4cecfb0785e245227e43aa9f8",
+      "document_type": "digital",
+      "page_count": 1,
+      "characteristics": {
+        "layout_template": "telecom_utility",
+        "page_count": 1,
+        "is_scanned": false,
+        "resolution_dpi": 300,
+        "rotation_degrees": 0.0,
+        "jpeg_quality": null,
+        "contrast_factor": 1.0
+      },
+      "issues_count": 0
+    },
+    {
+      "document_id": "DOC-SYN-004",
+      "file_name": "syn_invoice_004_digital.pdf",
+      "relative_path": "data/synthetic_documents/syn_invoice_004_digital.pdf",
+      "annotation_path": "data/annotations/DOC-SYN-004.json",
+      "sha256_hash": "d16726f6d941df0b48979e15a1706f9c9318cf7c044f6c974571b5ca628c539b",
+      "document_type": "digital",
+      "page_count": 1,
+      "characteristics": {
+        "layout_template": "professional_services",
+        "page_count": 1,
+        "is_scanned": false,
+        "resolution_dpi": 300,
+        "rotation_degrees": 0.0,
+        "jpeg_quality": null,
+        "contrast_factor": 1.0
+      },
+      "issues_count": 0
+    },
+    {
+      "document_id": "DOC-SYN-005",
+      "file_name": "syn_invoice_005_digital.pdf",
+      "relative_path": "data/synthetic_documents/syn_invoice_005_digital.pdf",
+      "annotation_path": "data/annotations/DOC-SYN-005.json",
+      "sha256_hash": "97841106b358794664210df1dd4a53418a22d94a683f76762d9b009054cde57f",
+      "document_type": "digital",
+      "page_count": 1,
+      "characteristics": {
+        "layout_template": "european_vat",
+        "page_count": 1,
+        "is_scanned": false,
+        "resolution_dpi": 300,
+        "rotation_degrees": 0.0,
+        "jpeg_quality": null,
+        "contrast_factor": 1.0
+      },
+      "issues_count": 0
+    },
+    {
+      "document_id": "DOC-SYN-006",
+      "file_name": "syn_invoice_006_digital.pdf",
+      "relative_path": "data/synthetic_documents/syn_invoice_006_digital.pdf",
+      "annotation_path": "data/annotations/DOC-SYN-006.json",
+      "sha256_hash": "13d0d30a996757fdee8309b02386958dc7c4e4cb0b368dff066868989d2bea9b",
+      "document_type": "digital",
+      "page_count": 1,
+      "characteristics": {
+        "layout_template": "modern_tech",
+        "page_count": 1,
+        "is_scanned": false,
+        "resolution_dpi": 300,
+        "rotation_degrees": 0.0,
+        "jpeg_quality": null,
+        "contrast_factor": 1.0
+      },
+      "issues_count": 0
+    },
+    {
+      "document_id": "DOC-SYN-007",
+      "file_name": "syn_invoice_007_digital.pdf",
+      "relative_path": "data/synthetic_documents/syn_invoice_007_digital.pdf",
+      "annotation_path": "data/annotations/DOC-SYN-007.json",
+      "sha256_hash": "c78a22bee21adbd8c9846774863b6e23144f05928942ed50e8cf5c0c7c7dd130",
+      "document_type": "digital",
+      "page_count": 1,
+      "characteristics": {
+        "layout_template": "corporate_classic",
+        "page_count": 1,
+        "is_scanned": false,
+        "resolution_dpi": 300,
+        "rotation_degrees": 0.0,
+        "jpeg_quality": null,
+        "contrast_factor": 1.0
+      },
+      "issues_count": 1
+    },
+    {
+      "document_id": "DOC-SYN-008",
+      "file_name": "syn_invoice_008_digital.pdf",
+      "relative_path": "data/synthetic_documents/syn_invoice_008_digital.pdf",
+      "annotation_path": "data/annotations/DOC-SYN-008.json",
+      "sha256_hash": "4c47aa49ea1512db5fc3a1d18ed262029676be9c3dbb364c63a6f7b9934ee5c4",
+      "document_type": "digital",
+      "page_count": 1,
+      "characteristics": {
+        "layout_template": "telecom_utility",
+        "page_count": 1,
+        "is_scanned": false,
+        "resolution_dpi": 300,
+        "rotation_degrees": 0.0,
+        "jpeg_quality": null,
+        "contrast_factor": 1.0
+      },
+      "issues_count": 0
+    },
+    {
+      "document_id": "DOC-SYN-009",
+      "file_name": "syn_invoice_009_digital.pdf",
+      "relative_path": "data/synthetic_documents/syn_invoice_009_digital.pdf",
+      "annotation_path": "data/annotations/DOC-SYN-009.json",
+      "sha256_hash": "029651337302ae34c5b5d318e6479718e219a16a960a2f38293ee7c1706d2cad",
+      "document_type": "digital",
+      "page_count": 1,
+      "characteristics": {
+        "layout_template": "professional_services",
+        "page_count": 1,
+        "is_scanned": false,
+        "resolution_dpi": 300,
+        "rotation_degrees": 0.0,
+        "jpeg_quality": null,
+        "contrast_factor": 1.0
+      },
+      "issues_count": 0
+    },
+    {
+      "document_id": "DOC-SYN-010",
+      "file_name": "syn_invoice_010_digital.pdf",
+      "relative_path": "data/synthetic_documents/syn_invoice_010_digital.pdf",
+      "annotation_path": "data/annotations/DOC-SYN-010.json",
+      "sha256_hash": "2fa85c16ef8fea52ec5e6ea57b90a18e5b8bb14164d8d32864994b716bf22bde",
+      "document_type": "digital",
+      "page_count": 2,
+      "characteristics": {
+        "layout_template": "european_vat",
+        "page_count": 2,
+        "is_scanned": false,
+        "resolution_dpi": 300,
+        "rotation_degrees": 0.0,
+        "jpeg_quality": null,
+        "contrast_factor": 1.0
+      },
+      "issues_count": 0
+    },
+    {
+      "document_id": "DOC-SYN-011",
+      "file_name": "syn_invoice_011_digital.pdf",
+      "relative_path": "data/synthetic_documents/syn_invoice_011_digital.pdf",
+      "annotation_path": "data/annotations/DOC-SYN-011.json",
+      "sha256_hash": "6bebcb7a855335b2fa7ee42b2a9fec52db2582104e0c484de2a2d151c27edb87",
+      "document_type": "digital",
+      "page_count": 1,
+      "characteristics": {
+        "layout_template": "modern_tech",
+        "page_count": 1,
+        "is_scanned": false,
+        "resolution_dpi": 300,
+        "rotation_degrees": 0.0,
+        "jpeg_quality": null,
+        "contrast_factor": 1.0
+      },
+      "issues_count": 0
+    },
+    {
+      "document_id": "DOC-SYN-012",
+      "file_name": "syn_invoice_012_digital.pdf",
+      "relative_path": "data/synthetic_documents/syn_invoice_012_digital.pdf",
+      "annotation_path": "data/annotations/DOC-SYN-012.json",
+      "sha256_hash": "5a196bf83cff2fec983d4dfe10528cf366207e556c746ba446519a6978cf96e3",
+      "document_type": "digital",
+      "page_count": 1,
+      "characteristics": {
+        "layout_template": "corporate_classic",
+        "page_count": 1,
+        "is_scanned": false,
+        "resolution_dpi": 300,
+        "rotation_degrees": 0.0,
+        "jpeg_quality": null,
+        "contrast_factor": 1.0
+      },
+      "issues_count": 1
+    },
+    {
+      "document_id": "DOC-SYN-013",
+      "file_name": "syn_invoice_013_digital.pdf",
+      "relative_path": "data/synthetic_documents/syn_invoice_013_digital.pdf",
+      "annotation_path": "data/annotations/DOC-SYN-013.json",
+      "sha256_hash": "1e1df8c1998d93fc613cd02d700422ba1f548ac434575f503c3fcab865047cbf",
+      "document_type": "digital",
+      "page_count": 1,
+      "characteristics": {
+        "layout_template": "telecom_utility",
+        "page_count": 1,
+        "is_scanned": false,
+        "resolution_dpi": 300,
+        "rotation_degrees": 0.0,
+        "jpeg_quality": null,
+        "contrast_factor": 1.0
+      },
+      "issues_count": 0
+    },
+    {
+      "document_id": "DOC-SYN-014",
+      "file_name": "syn_invoice_014_digital.pdf",
+      "relative_path": "data/synthetic_documents/syn_invoice_014_digital.pdf",
+      "annotation_path": "data/annotations/DOC-SYN-014.json",
+      "sha256_hash": "534cea836ef4956740154ebb4902221454183e5a05f19f83912db14ffe6745ba",
+      "document_type": "digital",
+      "page_count": 1,
+      "characteristics": {
+        "layout_template": "professional_services",
+        "page_count": 1,
+        "is_scanned": false,
+        "resolution_dpi": 300,
+        "rotation_degrees": 0.0,
+        "jpeg_quality": null,
+        "contrast_factor": 1.0
+      },
+      "issues_count": 0
+    },
+    {
+      "document_id": "DOC-SYN-015",
+      "file_name": "syn_invoice_015_digital.pdf",
+      "relative_path": "data/synthetic_documents/syn_invoice_015_digital.pdf",
+      "annotation_path": "data/annotations/DOC-SYN-015.json",
+      "sha256_hash": "221d24f6e444136086371cb8ffa2ec2c02e655fe1ed3b0199ddca2f62ffddd05",
+      "document_type": "digital",
+      "page_count": 1,
+      "characteristics": {
+        "layout_template": "european_vat",
+        "page_count": 1,
+        "is_scanned": false,
+        "resolution_dpi": 300,
+        "rotation_degrees": 0.0,
+        "jpeg_quality": null,
+        "contrast_factor": 1.0
+      },
+      "issues_count": 1
+    },
+    {
+      "document_id": "DOC-SYN-016",
+      "file_name": "syn_invoice_016_digital.pdf",
+      "relative_path": "data/synthetic_documents/syn_invoice_016_digital.pdf",
+      "annotation_path": "data/annotations/DOC-SYN-016.json",
+      "sha256_hash": "1eeacdbabbde5488667e3452fd2a4908e9db26b02aefa203fa74b74d39f4e315",
+      "document_type": "digital",
+      "page_count": 1,
+      "characteristics": {
+        "layout_template": "modern_tech",
+        "page_count": 1,
+        "is_scanned": false,
+        "resolution_dpi": 300,
+        "rotation_degrees": 0.0,
+        "jpeg_quality": null,
+        "contrast_factor": 1.0
+      },
+      "issues_count": 0
+    },
+    {
+      "document_id": "DOC-SYN-017",
+      "file_name": "syn_invoice_017_digital.pdf",
+      "relative_path": "data/synthetic_documents/syn_invoice_017_digital.pdf",
+      "annotation_path": "data/annotations/DOC-SYN-017.json",
+      "sha256_hash": "a0c37e078f8f7823eb80ff4722a386c463e311329a715ee99748b8c584cb6ba8",
+      "document_type": "digital",
+      "page_count": 1,
+      "characteristics": {
+        "layout_template": "corporate_classic",
+        "page_count": 1,
+        "is_scanned": false,
+        "resolution_dpi": 300,
+        "rotation_degrees": 0.0,
+        "jpeg_quality": null,
+        "contrast_factor": 1.0
+      },
+      "issues_count": 0
+    },
+    {
+      "document_id": "DOC-SYN-018",
+      "file_name": "syn_invoice_018_digital.pdf",
+      "relative_path": "data/synthetic_documents/syn_invoice_018_digital.pdf",
+      "annotation_path": "data/annotations/DOC-SYN-018.json",
+      "sha256_hash": "35da45da7c727fc73070c0fe845e10ecbfe1659654a926b9f80ae37c4eee0595",
+      "document_type": "digital",
+      "page_count": 1,
+      "characteristics": {
+        "layout_template": "telecom_utility",
+        "page_count": 1,
+        "is_scanned": false,
+        "resolution_dpi": 300,
+        "rotation_degrees": 0.0,
+        "jpeg_quality": null,
+        "contrast_factor": 1.0
+      },
+      "issues_count": 1
+    },
+    {
+      "document_id": "DOC-SYN-019",
+      "file_name": "syn_invoice_019_digital.pdf",
+      "relative_path": "data/synthetic_documents/syn_invoice_019_digital.pdf",
+      "annotation_path": "data/annotations/DOC-SYN-019.json",
+      "sha256_hash": "cde7363adc48ea7be7f52ec72313fbafdf428ef7d280b2099d1e2bcdeee5a2bb",
+      "document_type": "digital",
+      "page_count": 1,
+      "characteristics": {
+        "layout_template": "professional_services",
+        "page_count": 1,
+        "is_scanned": false,
+        "resolution_dpi": 300,
+        "rotation_degrees": 0.0,
+        "jpeg_quality": null,
+        "contrast_factor": 1.0
+      },
+      "issues_count": 0
+    },
+    {
+      "document_id": "DOC-SYN-020",
+      "file_name": "syn_invoice_020_digital.pdf",
+      "relative_path": "data/synthetic_documents/syn_invoice_020_digital.pdf",
+      "annotation_path": "data/annotations/DOC-SYN-020.json",
+      "sha256_hash": "6a14dceccfd825344877ccf8ee13c2f066f867f03d24d7ec651012b0107a7df7",
+      "document_type": "digital",
+      "page_count": 1,
+      "characteristics": {
+        "layout_template": "european_vat",
+        "page_count": 1,
+        "is_scanned": false,
+        "resolution_dpi": 300,
+        "rotation_degrees": 0.0,
+        "jpeg_quality": null,
+        "contrast_factor": 1.0
+      },
+      "issues_count": 0
+    },
+    {
+      "document_id": "DOC-SYN-021",
+      "file_name": "syn_invoice_021_digital.pdf",
+      "relative_path": "data/synthetic_documents/syn_invoice_021_digital.pdf",
+      "annotation_path": "data/annotations/DOC-SYN-021.json",
+      "sha256_hash": "7de14d1ff8c053b2b09505090f7dbb9b9cdd418465f9e2c1863c8b083a602d17",
+      "document_type": "digital",
+      "page_count": 1,
+      "characteristics": {
+        "layout_template": "modern_tech",
+        "page_count": 1,
+        "is_scanned": false,
+        "resolution_dpi": 300,
+        "rotation_degrees": 0.0,
+        "jpeg_quality": null,
+        "contrast_factor": 1.0
+      },
+      "issues_count": 0
+    },
+    {
+      "document_id": "DOC-SYN-022",
+      "file_name": "syn_invoice_022_digital.pdf",
+      "relative_path": "data/synthetic_documents/syn_invoice_022_digital.pdf",
+      "annotation_path": "data/annotations/DOC-SYN-022.json",
+      "sha256_hash": "b85982e3e65d396139122460875b693a4137b7a2aa74797cb0ec62fdad448ade",
+      "document_type": "digital",
+      "page_count": 1,
+      "characteristics": {
+        "layout_template": "corporate_classic",
+        "page_count": 1,
+        "is_scanned": false,
+        "resolution_dpi": 300,
+        "rotation_degrees": 0.0,
+        "jpeg_quality": null,
+        "contrast_factor": 1.0
+      },
+      "issues_count": 0
+    },
+    {
+      "document_id": "DOC-SYN-023",
+      "file_name": "syn_invoice_023_digital.pdf",
+      "relative_path": "data/synthetic_documents/syn_invoice_023_digital.pdf",
+      "annotation_path": "data/annotations/DOC-SYN-023.json",
+      "sha256_hash": "b555ea133febf76b42955832e6e8fa3e04c6742682a1a5dde734025697bb58ec",
+      "document_type": "digital",
+      "page_count": 1,
+      "characteristics": {
+        "layout_template": "telecom_utility",
+        "page_count": 1,
+        "is_scanned": false,
+        "resolution_dpi": 300,
+        "rotation_degrees": 0.0,
+        "jpeg_quality": null,
+        "contrast_factor": 1.0
+      },
+      "issues_count": 1
+    },
+    {
+      "document_id": "DOC-SYN-024",
+      "file_name": "syn_invoice_024_digital.pdf",
+      "relative_path": "data/synthetic_documents/syn_invoice_024_digital.pdf",
+      "annotation_path": "data/annotations/DOC-SYN-024.json",
+      "sha256_hash": "2afa2f8db437e9e0426b15dcfdd717ea8d66c63e3d099e04912d00ddaa553740",
+      "document_type": "digital",
+      "page_count": 1,
+      "characteristics": {
+        "layout_template": "professional_services",
+        "page_count": 1,
+        "is_scanned": false,
+        "resolution_dpi": 300,
+        "rotation_degrees": 0.0,
+        "jpeg_quality": null,
+        "contrast_factor": 1.0
+      },
+      "issues_count": 0
+    },
+    {
+      "document_id": "DOC-SYN-025",
+      "file_name": "syn_invoice_025_digital.pdf",
+      "relative_path": "data/synthetic_documents/syn_invoice_025_digital.pdf",
+      "annotation_path": "data/annotations/DOC-SYN-025.json",
+      "sha256_hash": "ae75a7b2cc50804e4f44589692a89eb547db49a94a6aaa085c13aaa0045adc8b",
+      "document_type": "digital",
+      "page_count": 1,
+      "characteristics": {
+        "layout_template": "european_vat",
+        "page_count": 1,
+        "is_scanned": false,
+        "resolution_dpi": 300,
+        "rotation_degrees": 0.0,
+        "jpeg_quality": null,
+        "contrast_factor": 1.0
+      },
+      "issues_count": 1
+    },
+    {
+      "document_id": "DOC-SYN-026",
+      "file_name": "syn_invoice_026_digital.pdf",
+      "relative_path": "data/synthetic_documents/syn_invoice_026_digital.pdf",
+      "annotation_path": "data/annotations/DOC-SYN-026.json",
+      "sha256_hash": "cca732ccb7b095fdb7a2536b4a6183e1a8f34c6e7dd787ca127065cb8bcd8edf",
+      "document_type": "digital",
+      "page_count": 1,
+      "characteristics": {
+        "layout_template": "modern_tech",
+        "page_count": 1,
+        "is_scanned": false,
+        "resolution_dpi": 300,
+        "rotation_degrees": 0.0,
+        "jpeg_quality": null,
+        "contrast_factor": 1.0
+      },
+      "issues_count": 0
+    },
+    {
+      "document_id": "DOC-SYN-027",
+      "file_name": "syn_invoice_027_digital.pdf",
+      "relative_path": "data/synthetic_documents/syn_invoice_027_digital.pdf",
+      "annotation_path": "data/annotations/DOC-SYN-027.json",
+      "sha256_hash": "29a69dff83398b7155706bbd8ffb5a2b09e1fa2c5111016538c53f8bdaceaa7f",
+      "document_type": "digital",
+      "page_count": 1,
+      "characteristics": {
+        "layout_template": "corporate_classic",
+        "page_count": 1,
+        "is_scanned": false,
+        "resolution_dpi": 300,
+        "rotation_degrees": 0.0,
+        "jpeg_quality": null,
+        "contrast_factor": 1.0
+      },
+      "issues_count": 1
+    },
+    {
+      "document_id": "DOC-SYN-028",
+      "file_name": "syn_invoice_028_digital.pdf",
+      "relative_path": "data/synthetic_documents/syn_invoice_028_digital.pdf",
+      "annotation_path": "data/annotations/DOC-SYN-028.json",
+      "sha256_hash": "3b981b855754248b4c03dd8b4025e48c21a3076b1ba0286b4aee3309dc99a730",
+      "document_type": "digital",
+      "page_count": 2,
+      "characteristics": {
+        "layout_template": "telecom_utility",
+        "page_count": 2,
+        "is_scanned": false,
+        "resolution_dpi": 300,
+        "rotation_degrees": 0.0,
+        "jpeg_quality": null,
+        "contrast_factor": 1.0
+      },
+      "issues_count": 0
+    },
+    {
+      "document_id": "DOC-SYN-029",
+      "file_name": "syn_invoice_029_digital.pdf",
+      "relative_path": "data/synthetic_documents/syn_invoice_029_digital.pdf",
+      "annotation_path": "data/annotations/DOC-SYN-029.json",
+      "sha256_hash": "708dcebdba38ca54da6f0a9f8afaae0617b3b32a0120d40a4bf51ae7c7ff9e63",
+      "document_type": "digital",
+      "page_count": 1,
+      "characteristics": {
+        "layout_template": "professional_services",
+        "page_count": 1,
+        "is_scanned": false,
+        "resolution_dpi": 300,
+        "rotation_degrees": 0.0,
+        "jpeg_quality": null,
+        "contrast_factor": 1.0
+      },
+      "issues_count": 1
+    },
+    {
+      "document_id": "DOC-SYN-030",
+      "file_name": "syn_invoice_030_digital.pdf",
+      "relative_path": "data/synthetic_documents/syn_invoice_030_digital.pdf",
+      "annotation_path": "data/annotations/DOC-SYN-030.json",
+      "sha256_hash": "28cec31753fc2881c24dbb93a73a2fa7de6cc834993715c91e0e510d1ec005af",
+      "document_type": "digital",
+      "page_count": 1,
+      "characteristics": {
+        "layout_template": "european_vat",
+        "page_count": 1,
+        "is_scanned": false,
+        "resolution_dpi": 300,
+        "rotation_degrees": 0.0,
+        "jpeg_quality": null,
+        "contrast_factor": 1.0
+      },
+      "issues_count": 1
+    },
+    {
+      "document_id": "DOC-SYN-031",
+      "file_name": "syn_invoice_031_scanned.pdf",
+      "relative_path": "data/synthetic_documents/syn_invoice_031_scanned.pdf",
+      "annotation_path": "data/annotations/DOC-SYN-031.json",
+      "sha256_hash": "cfadb7a6ebdc92532c49e33fc3cb17524b6eef097563b821b4f004b9985e617d",
+      "document_type": "scanned",
+      "page_count": 1,
+      "characteristics": {
+        "layout_template": "modern_tech",
+        "page_count": 1,
+        "is_scanned": true,
+        "resolution_dpi": 300,
+        "rotation_degrees": 0.5,
+        "jpeg_quality": 80,
+        "contrast_factor": 1.05
+      },
+      "issues_count": 1
+    },
+    {
+      "document_id": "DOC-SYN-032",
+      "file_name": "syn_invoice_032_scanned.pdf",
+      "relative_path": "data/synthetic_documents/syn_invoice_032_scanned.pdf",
+      "annotation_path": "data/annotations/DOC-SYN-032.json",
+      "sha256_hash": "044a8614f54b2458e3e54b288deb029143b986aaa3584d273ed8c377f35643a6",
+      "document_type": "scanned",
+      "page_count": 1,
+      "characteristics": {
+        "layout_template": "corporate_classic",
+        "page_count": 1,
+        "is_scanned": true,
+        "resolution_dpi": 200,
+        "rotation_degrees": 0.5,
+        "jpeg_quality": 65,
+        "contrast_factor": 1.05
+      },
+      "issues_count": 1
+    },
+    {
+      "document_id": "DOC-SYN-033",
+      "file_name": "syn_invoice_033_scanned.pdf",
+      "relative_path": "data/synthetic_documents/syn_invoice_033_scanned.pdf",
+      "annotation_path": "data/annotations/DOC-SYN-033.json",
+      "sha256_hash": "e91403c906cb84b439928d3336e74926164f0c422ebc62e3ed07dabb0a8eda98",
+      "document_type": "scanned",
+      "page_count": 1,
+      "characteristics": {
+        "layout_template": "telecom_utility",
+        "page_count": 1,
+        "is_scanned": true,
+        "resolution_dpi": 150,
+        "rotation_degrees": -2.5,
+        "jpeg_quality": 80,
+        "contrast_factor": 1.05
+      },
+      "issues_count": 2
+    },
+    {
+      "document_id": "DOC-SYN-034",
+      "file_name": "syn_invoice_034_scanned.pdf",
+      "relative_path": "data/synthetic_documents/syn_invoice_034_scanned.pdf",
+      "annotation_path": "data/annotations/DOC-SYN-034.json",
+      "sha256_hash": "a579e4b7078e1f896b0a92e06979ca21fcf855b1b9ff05d831a9e3f8b2c46822",
+      "document_type": "scanned",
+      "page_count": 1,
+      "characteristics": {
+        "layout_template": "professional_services",
+        "page_count": 1,
+        "is_scanned": true,
+        "resolution_dpi": 200,
+        "rotation_degrees": 1.8,
+        "jpeg_quality": 65,
+        "contrast_factor": 1.05
+      },
+      "issues_count": 1
+    },
+    {
+      "document_id": "DOC-SYN-035",
+      "file_name": "syn_invoice_035_scanned.pdf",
+      "relative_path": "data/synthetic_documents/syn_invoice_035_scanned.pdf",
+      "annotation_path": "data/annotations/DOC-SYN-035.json",
+      "sha256_hash": "65a9940852b6e97f2117840b3ac046daa7b9b8135c03581d174debbe9dc291cc",
+      "document_type": "scanned",
+      "page_count": 1,
+      "characteristics": {
+        "layout_template": "european_vat",
+        "page_count": 1,
+        "is_scanned": true,
+        "resolution_dpi": 300,
+        "rotation_degrees": 0.5,
+        "jpeg_quality": 45,
+        "contrast_factor": 1.05
+      },
+      "issues_count": 3
+    },
+    {
+      "document_id": "DOC-SYN-036",
+      "file_name": "syn_invoice_036_scanned.pdf",
+      "relative_path": "data/synthetic_documents/syn_invoice_036_scanned.pdf",
+      "annotation_path": "data/annotations/DOC-SYN-036.json",
+      "sha256_hash": "579d9692ca5270c8e2953ece38e2ab210a6b234483b5b366e785b1ad8c27cd69",
+      "document_type": "scanned",
+      "page_count": 1,
+      "characteristics": {
+        "layout_template": "modern_tech",
+        "page_count": 1,
+        "is_scanned": true,
+        "resolution_dpi": 150,
+        "rotation_degrees": 0.5,
+        "jpeg_quality": 65,
+        "contrast_factor": 0.85
+      },
+      "issues_count": 2
+    },
+    {
+      "document_id": "DOC-SYN-037",
+      "file_name": "syn_invoice_037_scanned.pdf",
+      "relative_path": "data/synthetic_documents/syn_invoice_037_scanned.pdf",
+      "annotation_path": "data/annotations/DOC-SYN-037.json",
+      "sha256_hash": "1af7d53a02de56d0aaa0e23d1a3237c0a2dea15b2b5b5b0be0a77614ce0645bf",
+      "document_type": "scanned",
+      "page_count": 1,
+      "characteristics": {
+        "layout_template": "corporate_classic",
+        "page_count": 1,
+        "is_scanned": true,
+        "resolution_dpi": 300,
+        "rotation_degrees": -2.5,
+        "jpeg_quality": 80,
+        "contrast_factor": 1.05
+      },
+      "issues_count": 1
+    },
+    {
+      "document_id": "DOC-SYN-038",
+      "file_name": "syn_invoice_038_scanned.pdf",
+      "relative_path": "data/synthetic_documents/syn_invoice_038_scanned.pdf",
+      "annotation_path": "data/annotations/DOC-SYN-038.json",
+      "sha256_hash": "43e1c80089334fbad653deb9a1e8788b069e6a3a6672193df5f6973d50113cc7",
+      "document_type": "scanned",
+      "page_count": 1,
+      "characteristics": {
+        "layout_template": "telecom_utility",
+        "page_count": 1,
+        "is_scanned": true,
+        "resolution_dpi": 200,
+        "rotation_degrees": 1.8,
+        "jpeg_quality": 65,
+        "contrast_factor": 1.05
+      },
+      "issues_count": 2
+    },
+    {
+      "document_id": "DOC-SYN-039",
+      "file_name": "syn_invoice_039_scanned.pdf",
+      "relative_path": "data/synthetic_documents/syn_invoice_039_scanned.pdf",
+      "annotation_path": "data/annotations/DOC-SYN-039.json",
+      "sha256_hash": "a93b61bc67f2fc3a088292db9fb25786a2ea25febbe4a32d187b825c68b29e30",
+      "document_type": "scanned",
+      "page_count": 1,
+      "characteristics": {
+        "layout_template": "professional_services",
+        "page_count": 1,
+        "is_scanned": true,
+        "resolution_dpi": 150,
+        "rotation_degrees": 0.5,
+        "jpeg_quality": 80,
+        "contrast_factor": 1.05
+      },
+      "issues_count": 2
+    },
+    {
+      "document_id": "DOC-SYN-040",
+      "file_name": "syn_invoice_040_scanned.pdf",
+      "relative_path": "data/synthetic_documents/syn_invoice_040_scanned.pdf",
+      "annotation_path": "data/annotations/DOC-SYN-040.json",
+      "sha256_hash": "540a3e05675d75fa300c4083d6cc919b20d6fd438c2410ee802a5b529edc0df1",
+      "document_type": "scanned",
+      "page_count": 1,
+      "characteristics": {
+        "layout_template": "european_vat",
+        "page_count": 1,
+        "is_scanned": true,
+        "resolution_dpi": 200,
+        "rotation_degrees": 0.5,
+        "jpeg_quality": 45,
+        "contrast_factor": 1.05
+      },
+      "issues_count": 2
+    },
+    {
+      "document_id": "DOC-SYN-041",
+      "file_name": "syn_invoice_041_scanned.pdf",
+      "relative_path": "data/synthetic_documents/syn_invoice_041_scanned.pdf",
+      "annotation_path": "data/annotations/DOC-SYN-041.json",
+      "sha256_hash": "9a8c8137ce61d32eda92b4062eb05b3afd3e1a6a820b8c9711cac23cee1284bd",
+      "document_type": "scanned",
+      "page_count": 1,
+      "characteristics": {
+        "layout_template": "modern_tech",
+        "page_count": 1,
+        "is_scanned": true,
+        "resolution_dpi": 300,
+        "rotation_degrees": -2.5,
+        "jpeg_quality": 80,
+        "contrast_factor": 1.05
+      },
+      "issues_count": 2
+    },
+    {
+      "document_id": "DOC-SYN-042",
+      "file_name": "syn_invoice_042_scanned.pdf",
+      "relative_path": "data/synthetic_documents/syn_invoice_042_scanned.pdf",
+      "annotation_path": "data/annotations/DOC-SYN-042.json",
+      "sha256_hash": "f436ec7843c042d1a4277f4618311d027a162a0e6840581d6f3f9985f6c2a29d",
+      "document_type": "scanned",
+      "page_count": 1,
+      "characteristics": {
+        "layout_template": "corporate_classic",
+        "page_count": 1,
+        "is_scanned": true,
+        "resolution_dpi": 150,
+        "rotation_degrees": 1.8,
+        "jpeg_quality": 65,
+        "contrast_factor": 0.85
+      },
+      "issues_count": 2
+    },
+    {
+      "document_id": "DOC-SYN-043",
+      "file_name": "syn_invoice_043_scanned.pdf",
+      "relative_path": "data/synthetic_documents/syn_invoice_043_scanned.pdf",
+      "annotation_path": "data/annotations/DOC-SYN-043.json",
+      "sha256_hash": "e6701cbcf7d8b9d0bdd75c4cd0feaec9d3ec7f03d3737c05ff06e29c9664ddcf",
+      "document_type": "scanned",
+      "page_count": 1,
+      "characteristics": {
+        "layout_template": "telecom_utility",
+        "page_count": 1,
+        "is_scanned": true,
+        "resolution_dpi": 300,
+        "rotation_degrees": 0.5,
+        "jpeg_quality": 80,
+        "contrast_factor": 1.05
+      },
+      "issues_count": 1
+    },
+    {
+      "document_id": "DOC-SYN-044",
+      "file_name": "syn_invoice_044_scanned.pdf",
+      "relative_path": "data/synthetic_documents/syn_invoice_044_scanned.pdf",
+      "annotation_path": "data/annotations/DOC-SYN-044.json",
+      "sha256_hash": "5b7c0cfa2da9da66321380c9ff0bc075810c97a3ceba270ff53c1edda35fa33a",
+      "document_type": "scanned",
+      "page_count": 1,
+      "characteristics": {
+        "layout_template": "professional_services",
+        "page_count": 1,
+        "is_scanned": true,
+        "resolution_dpi": 200,
+        "rotation_degrees": 0.5,
+        "jpeg_quality": 65,
+        "contrast_factor": 1.05
+      },
+      "issues_count": 1
+    },
+    {
+      "document_id": "DOC-SYN-045",
+      "file_name": "syn_invoice_045_scanned.pdf",
+      "relative_path": "data/synthetic_documents/syn_invoice_045_scanned.pdf",
+      "annotation_path": "data/annotations/DOC-SYN-045.json",
+      "sha256_hash": "e382d99f9bb3f6c844e9d1e49a56b81799b37861016e623aebb5fc32a3aa35dd",
+      "document_type": "scanned",
+      "page_count": 1,
+      "characteristics": {
+        "layout_template": "european_vat",
+        "page_count": 1,
+        "is_scanned": true,
+        "resolution_dpi": 150,
+        "rotation_degrees": -2.5,
+        "jpeg_quality": 45,
+        "contrast_factor": 1.05
+      },
+      "issues_count": 3
+    },
+    {
+      "document_id": "DOC-SYN-046",
+      "file_name": "syn_invoice_046_scanned.pdf",
+      "relative_path": "data/synthetic_documents/syn_invoice_046_scanned.pdf",
+      "annotation_path": "data/annotations/DOC-SYN-046.json",
+      "sha256_hash": "11c346f1e5d1c24a1392fb139041435a347e8a510dc7bc4a32542241cbcb0d4a",
+      "document_type": "scanned",
+      "page_count": 1,
+      "characteristics": {
+        "layout_template": "modern_tech",
+        "page_count": 1,
+        "is_scanned": true,
+        "resolution_dpi": 200,
+        "rotation_degrees": 1.8,
+        "jpeg_quality": 65,
+        "contrast_factor": 1.05
+      },
+      "issues_count": 1
+    },
+    {
+      "document_id": "DOC-SYN-047",
+      "file_name": "syn_invoice_047_scanned.pdf",
+      "relative_path": "data/synthetic_documents/syn_invoice_047_scanned.pdf",
+      "annotation_path": "data/annotations/DOC-SYN-047.json",
+      "sha256_hash": "cf3e5ba06818f557c15445c1f0246214cc169527389e4d4211ab2396fc2209ef",
+      "document_type": "scanned",
+      "page_count": 1,
+      "characteristics": {
+        "layout_template": "corporate_classic",
+        "page_count": 1,
+        "is_scanned": true,
+        "resolution_dpi": 300,
+        "rotation_degrees": 0.5,
+        "jpeg_quality": 80,
+        "contrast_factor": 1.05
+      },
+      "issues_count": 1
+    },
+    {
+      "document_id": "DOC-SYN-048",
+      "file_name": "syn_invoice_048_scanned.pdf",
+      "relative_path": "data/synthetic_documents/syn_invoice_048_scanned.pdf",
+      "annotation_path": "data/annotations/DOC-SYN-048.json",
+      "sha256_hash": "13f1bb6c7f9c784d6954b6c64bc41284783bb5f763adcdaa8e2e23d7ff36f9bb",
+      "document_type": "scanned",
+      "page_count": 1,
+      "characteristics": {
+        "layout_template": "telecom_utility",
+        "page_count": 1,
+        "is_scanned": true,
+        "resolution_dpi": 150,
+        "rotation_degrees": 0.5,
+        "jpeg_quality": 65,
+        "contrast_factor": 0.85
+      },
+      "issues_count": 2
+    },
+    {
+      "document_id": "DOC-SYN-049",
+      "file_name": "syn_invoice_049_scanned.pdf",
+      "relative_path": "data/synthetic_documents/syn_invoice_049_scanned.pdf",
+      "annotation_path": "data/annotations/DOC-SYN-049.json",
+      "sha256_hash": "94e1bcbc308c861f362b24c5266c9a31fc34576586a331418d68a0521c27ea4f",
+      "document_type": "scanned",
+      "page_count": 1,
+      "characteristics": {
+        "layout_template": "professional_services",
+        "page_count": 1,
+        "is_scanned": true,
+        "resolution_dpi": 300,
+        "rotation_degrees": -2.5,
+        "jpeg_quality": 80,
+        "contrast_factor": 1.05
+      },
+      "issues_count": 1
+    },
+    {
+      "document_id": "DOC-SYN-050",
+      "file_name": "syn_invoice_050_scanned.pdf",
+      "relative_path": "data/synthetic_documents/syn_invoice_050_scanned.pdf",
+      "annotation_path": "data/annotations/DOC-SYN-050.json",
+      "sha256_hash": "c2941b5cc9bd7bcf2553ab511d7fc28868ea7e9b4cbc81a53a1cdff60db3b54d",
+      "document_type": "scanned",
+      "page_count": 1,
+      "characteristics": {
+        "layout_template": "european_vat",
+        "page_count": 1,
+        "is_scanned": true,
+        "resolution_dpi": 200,
+        "rotation_degrees": 1.8,
+        "jpeg_quality": 45,
+        "contrast_factor": 1.05
+      },
+      "issues_count": 2
+    }
+  ]
+}

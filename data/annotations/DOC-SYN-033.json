@@ -1,0 +1,37 @@
+{
+  "document_id": "DOC-SYN-033",
+  "file_name": "syn_invoice_033_scanned.pdf",
+  "document_type": "scanned",
+  "invoice_number": "INV-2024-0033",
+  "invoice_date": "2024-10-17",
+  "vendor_name": "Delta Office Furnishings Co.",
+  "currency": "EUR",
+  "subtotal": "1140.00",
+  "tax": "114.00",
+  "total": "1254.00",
+  "characteristics": {
+    "layout_template": "telecom_utility",
+    "page_count": 1,
+    "is_scanned": true,
+    "resolution_dpi": 150,
+    "rotation_degrees": -2.5,
+    "jpeg_quality": 80,
+    "contrast_factor": 1.05
+  },
+  "deliberately_introduced_issues": [
+    {
+      "issue_type": "scan_skew",
+      "field": null,
+      "description": "Scanned page rotated with -2.5 degrees skew",
+      "expected_extracted": null,
+      "ground_truth_actual": null
+    },
+    {
+      "issue_type": "scan_degradation",
+      "field": null,
+      "description": "Degraded image quality: DPI=150, JPEG quality=80",
+      "expected_extracted": null,
+      "ground_truth_actual": null
+    }
+  ]
+}
