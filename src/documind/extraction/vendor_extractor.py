@@ -4,6 +4,7 @@ Extracts vendor corporate name, address, tax identifier, email, and phone,
 as well as customer (Bill-To) name, address, and contact details with full provenance.
 """
 
+import re
 from typing import Any
 
 from documind.extraction.evidence_mapper import EvidenceMapper
@@ -17,6 +18,13 @@ from documind.extraction.spatial import (
     SpatialLine,
 )
 from documind.schemas.invoice import ExtractionMethod, FieldEvidence
+
+
+def _normalize_entity_name(name: str) -> str:
+    """Normalize common OCR misrecognitions in corporate entity names."""
+    # Correct OCR 'Lid.' / 'Lid' misrecognition of 'Ltd.' / 'Ltd'
+    name = re.sub(r"\bLid\b\.?", "Ltd.", name)
+    return name.strip()
 
 
 class EntityExtractor:
@@ -64,6 +72,9 @@ class EntityExtractor:
                             vendor_name = candidate
                             v_words = next_line.words
                             break
+
+        if vendor_name:
+            vendor_name = _normalize_entity_name(vendor_name)
 
         if vendor_name and v_words:
             results["vendor_name"] = (
@@ -211,6 +222,9 @@ class EntityExtractor:
                 if line_addr.y_center < 245.0 and line_addr.words:
                     customer_addr = line_addr.text.strip()
                     ca_words = line_addr.words
+
+        if customer_name:
+            customer_name = _normalize_entity_name(customer_name)
 
         if customer_name and c_words:
             results["customer_name"] = (
