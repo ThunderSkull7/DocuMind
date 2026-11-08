@@ -100,3 +100,4 @@ The `AuditTrail` records chronological workflow events:
 
 - **Optimistic Concurrency**: Every `ReviewRecord` includes a monotonically increasing `revision: int`. Mutating calls accept an `expected_revision` argument; any attempt to apply updates against a stale revision raises `ReviewConcurrencyError`.
 - **Atomic Rollback**: If an operation fails during execution (e.g., validation gateway rejection or invalid state transition), review state is not mutated, and no spurious audit events are appended.
+

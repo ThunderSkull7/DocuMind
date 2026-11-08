@@ -46,7 +46,7 @@ where = ["src"]
 [tool.pytest.ini_options]
 minversion = "8.0"
 testpaths = ["tests"]
-pythonpath = ["src"]
+pythonpath = ["src", "."]
 addopts = "-ra -q --strict-markers"
 markers = [
     "unit: Unit tests",

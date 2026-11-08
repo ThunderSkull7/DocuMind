@@ -100,7 +100,27 @@ Evaluates the deterministic human review workflow, verification gateways, field-
 
 ---
 
-## 6. Evaluation Execution & Quality Gates
+## 6. Streamlit Application & Reporting Metrics (Phase 7 Implemented)
+
+Evaluates the interactive user interface, spatial evidence rendering fidelity, approval gateway enforcement in UI, and export safety:
+
+### 6.1 Spatial Evidence Visualization Fidelity
+- **Bounding Box Projection**: Automatic translation of PDF point coordinates to pixel rendering space at arbitrary display DPI ($150 \text{ DPI}$ baseline).
+- **Zero Coordinate Hallucination**: When evidence is missing or reviewer-supplied, the UI strictly displays an explicit badge rather than drawing synthetic boxes.
+- **Visual Distinction**: High-contrast amber highlight overlays (`rgba(245, 158, 11, 0.25)`) with `#d97706` borders distinguish detected evidence from background text.
+
+### 6.2 Approval Gateway Enforcement in UI
+- **Critical Discrepancy Gateways**: Invoices with `CRITICAL` severity discrepancies disable the "Approve Invoice" action in the UI, enforcing non-destructive corrections first.
+- **Warning Override Enforcement**: Invoices with arithmetic or business warnings require explicit reason code entry prior to approval unlocking.
+- **Optimistic Locking**: UI enforces revision checks; concurrent approvals/edits are rejected with actionable alerts.
+
+### 6.3 Export Security & CWE-1236 Formula-Injection Immunity
+- **Formula-Injection Sanitization**: 100% of tabular CSV export values starting with dangerous spreadsheet triggers (`=`, `+`, `-`, `@`, `\t`, `\r`, `%`) are prefixed with `'`.
+- **Export Coverage**: Complete CSV and JSON exports for Processing Summaries, Discrepancies, Review Outcomes, Correction Histories, and Audit Trails.
+
+---
+
+## 7. Evaluation Execution & Quality Gates
 
 Run the comprehensive evaluation suite via CLI:
 
@@ -113,3 +133,4 @@ Produces:
 2. `reports/phase_4_structured_extraction_evaluation.md`: Structured accuracy, line-item counts, evidence box validity, schema pass rates.
 3. `reports/phase_5_validation_evaluation.md`: Business validation statuses, discrepancy distributions, rule catalogue performance, and edge-case classification.
 4. `reports/phase_6_review_evaluation.md`: Review workflow state transitions, correction versioning, re-validation gateways, and audit trail guarantees.
+5. `reports/phase_7_application_evaluation.md`: Web application topology, evidence visualization fidelity, approval gateways, and formula injection sanitization.

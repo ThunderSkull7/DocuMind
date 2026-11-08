@@ -142,6 +142,42 @@ The review architecture guarantees:
 3. **Verification Gateways**: Prevents approving documents with unresolved critical discrepancies or invalid states until corrected.
 4. **Append-Only Audit Trail**: Every decision, correction, assignment, and state transition produces an immutable `AuditEvent`.
 
+### 3.4 Streamlit Presentation & Reporting Architecture (Phase 7)
+
+```mermaid
+flowchart TD
+    Browser["User Browser (Streamlit Multipage App)"] --> AppState["AppState Singleton Coordinator"]
+    
+    subgraph UI Pages
+        P0["Home (Diagnostics & Overview)"]
+        P1["01 Dashboard (AP KPIs & Trends)"]
+        P2["02 Upload Invoices (Multi-Gate Portal)"]
+        P3["03 Document Explorer (Registry & Drawers)"]
+        P4["04 Review Workbench (Split-Screen Evidence & Gateways)"]
+        P5["05 Validation Reports (Rule Hit Rates)"]
+        P6["06 Audit History (Immutable Event Stream)"]
+        P7["07 Settings & Export (Corpus Loader & Reports)"]
+    end
+    
+    Browser --- UI Pages
+    UI Pages --> AppState
+    
+    AppState --> Ingestion["IngestionService"]
+    AppState --> Extraction["ExtractionService + StructuredExtractor"]
+    AppState --> Validation["ValidationService"]
+    AppState --> Review["ReviewService"]
+    AppState --> Audit["AuditTrail"]
+    AppState --> Reporting["Reporting Exporters (CWE-1236 Sanitization)"]
+    
+    AppState --> LocalStorage[("Local JSON State Persistence<br/>data/storage/app_state/")]
+```
+
+The presentation layer guarantees:
+1. **Zero Fake Metrics**: All dashboard KPIs, discrepancy metrics, and status breakdowns are derived live from active domain records.
+2. **Dynamic Evidence Grounding**: High-DPI rasterization with automatic conversion from PDF point coordinates to pixel space and amber bounding-box highlight overlays.
+3. **Approval Gateways**: Prevents approving documents with unresolved critical discrepancies.
+4. **Formula Injection Sanitization**: Tabular CSV exports neutralize spreadsheet injection vectors by prefixing dangerous characters with single quotes.
+
 ---
 
 ## 4. Component Responsibilities
@@ -155,12 +191,11 @@ The review architecture guarantees:
 | `documind.ingestion` | File upload validation, MIME checking, size bounds, safe unique atomic storage. | `pymupdf`, `hashlib`, standard library | **Implemented** |
 | `documind.extraction` | Native PDF text extraction, Tesseract OCR fallback, hybrid routing, normalization. | `pymupdf`, `pytesseract`, `Pillow` | **Implemented** |
 | `documind.schemas` | Pydantic data models for invoice fields, line items, evidence, and records. | `pydantic` | **Implemented** |
-| `documind.extraction` | Hybrid PDF extraction, Tesseract OCR, deskewed spatial clustering, structured field extraction. | `pymupdf`, `pytesseract`, `Pillow` | **Implemented** |
 | `documind.validation` | Deterministic business validation: arithmetic integrity, completeness, duplicate detection, reference matching. | `Decimal`, Pydantic models, string distance | **Implemented** |
 | `documind.matching` | Vendor and PO reconciliation against reference records (integrated in `documind.validation`). | Exact & normalized matching | **Implemented** |
 | `documind.review` | Human review lifecycle, non-destructive field corrections, verification gateways, append-only audit trail. | Finite state machines, Pydantic, optimistic locking | **Implemented** |
-| `documind.reporting` | Exporting verified invoice records to structured formats (CSV, JSON). | `pandas`, standard library `json` | Phase 7 |
-| `app` | Streamlit web application providing UI for upload, verification, and inspection. | `streamlit` | Ingestion & Extraction Demo Active |
+| `documind.reporting` | Exporting verified invoice records to structured formats (CSV, JSON) with formula injection protection. | Python standard library `csv`, `json`, CWE-1236 sanitizer | **Implemented** |
+| `app` | Streamlit multipage application providing UI for dashboard, upload, review workbench, audit history, and reports. | `streamlit`, `pymupdf`, `Pillow` | **Implemented** |
 
 ---
 
@@ -172,3 +207,4 @@ The review architecture guarantees:
 - **ADR 0004**: Structured Invoice Field Extraction & Evidence Grounding (`docs/decisions/0004-structured-extraction-and-evidence-mapping.md`).
 - **ADR 0005**: Deterministic Business Rule Validation, Arithmetic Consistency & Discrepancy Detection (`docs/decisions/0005-business-rule-validation-and-discrepancies.md`).
 - **ADR 0006**: Human Review Workflow, Non-Destructive Corrections & Append-Only Audit Trail (`docs/decisions/0006-human-review-and-audit-trail.md`).
+- **ADR 0007**: Streamlit Application Architecture, Evidence Highlighting & Auditable Reporting (`docs/decisions/0007-streamlit-application-and-reporting.md`).

@@ -43,3 +43,4 @@ The review subsystem must allow reviewers to inspect extracted values alongside 
 ## Consequences
 - **Positive**: Complete auditability of human decisions; original document provenance is never lost or corrupted; financial risk is mitigated through automated re-validation gateways; concurrent reviewer conflicts are safely detected.
 - **Negative**: Reviewers cannot unilaterally force-approve missing mandatory fields without providing substitute values; multiple corrections generate additional audit events, slightly increasing log size.
+
