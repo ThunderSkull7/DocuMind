@@ -1,0 +1,41 @@
+name: "Bug Report"
+description: "Report a reproducible defect or bug in DocuMind"
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report an issue! Please ensure the bug is reproducible with synthetic or anonymized documents. Never upload confidential financial documents.
+  - type: input
+    id: environment
+    attributes:
+      label: "Environment Details"
+      description: "OS, Python version, Tesseract version (if applicable)"
+      placeholder: "e.g. Windows 11, Python 3.12.10, Tesseract 5.4.0"
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: "Steps to Reproduce"
+      description: "Detailed steps to reproduce the observed behavior"
+      placeholder: |
+        1. Ingest synthetic invoice '...'
+        2. Execute structured extraction / review workbench
+        3. Observe error ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: "Expected Behavior"
+      description: "What did you expect to happen?"
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: "Relevant Logs or Traceback"
+      description: "Paste sanitized terminal output or traceback here (scrub any personal data)"
+      render: shell
