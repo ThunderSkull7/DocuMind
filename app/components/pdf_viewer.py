@@ -8,7 +8,7 @@ import io
 from pathlib import Path
 from typing import Any
 
-import fitz  # PyMuPDF
+import pymupdf as fitz
 from PIL import Image, ImageDraw
 
 from documind.schemas.invoice import BoundingBox

@@ -67,3 +67,44 @@ def test_app_state_persistence_save_and_reload(tmp_path: Path) -> None:
     assert len(reloaded_revs) == 1
     assert reloaded_revs[0].status == ReviewStatus.APPROVED
     assert len(reloaded_state.audit_trail.get_events()) >= 3
+    assert len(reloaded_state.extractions) == 1
+    assert len(reloaded_state.validations) == 1
+    assert len(reloaded_state.documents) == 1
+
+
+def test_app_state_corrupted_json_snapshot_recovery(tmp_path: Path) -> None:
+    """Verify that malformed JSON snapshot files are backed up to .corrupted and do not crash load."""
+    corrupted_file = tmp_path / "reviews.json"
+    corrupted_file.write_text("{this is not valid json! truncated...", encoding="utf-8")
+
+    # AppState should safely handle the corrupted file
+    state = AppState(persistence_dir=tmp_path)
+    assert len(state.review_service.list_reviews()) == 0
+
+    # The corrupted file should have been renamed to .corrupted_*
+    corrupted_backups = list(tmp_path.glob("reviews.corrupted_*"))
+    assert len(corrupted_backups) == 1
+    assert "truncated" in corrupted_backups[0].read_text(encoding="utf-8")
+
+
+def test_app_state_atomic_write_behavior(tmp_path: Path) -> None:
+    """Verify that save_to_disk writes files atomically without leaving dangling .tmp files."""
+    state = AppState(persistence_dir=tmp_path)
+    pdf_path = Path("data/synthetic_documents/syn_invoice_001_digital.pdf")
+    state.process_document_bytes(pdf_path.read_bytes(), "syn_invoice_001_digital.pdf")
+    state.save_to_disk()
+
+    # Ensure all target json files exist and no .tmp files remain
+    expected_files = [
+        "reviews.json",
+        "audit.json",
+        "extractions.json",
+        "validations.json",
+        "documents.json",
+        "paths.json",
+    ]
+    for fname in expected_files:
+        assert (tmp_path / fname).is_file(), f"{fname} must exist after save_to_disk"
+
+    tmp_files = list(tmp_path.glob("*.tmp"))
+    assert len(tmp_files) == 0, "No dangling .tmp files should exist after atomic writes"

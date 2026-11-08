@@ -5,8 +5,12 @@ session state synchronization, and optional JSON state persistence.
 """
 
 import json
+import logging
+import os
 import threading
+import time
 from pathlib import Path
+from typing import Any
 
 from documind.config import get_settings
 from documind.extraction.field_extractor import StructuredInvoiceExtractor
@@ -20,8 +24,27 @@ from documind.schemas.invoice import InvoiceExtractionRecord
 from documind.validation.models import ValidationResult
 from documind.validation.service import ValidationService
 
+logger = logging.getLogger(__name__)
+
 _GLOBAL_APP_STATE = None
 _STATE_LOCK = threading.Lock()
+
+
+def _atomic_write_json(file_path: Path, data: Any) -> None:
+    """Atomically write JSON data using a temporary file and atomic replace."""
+    tmp_path = file_path.with_suffix(f"{file_path.suffix}.tmp")
+    try:
+        content = json.dumps(data, indent=2, default=str)
+        tmp_path.write_text(content, encoding="utf-8")
+        os.replace(tmp_path, file_path)
+    except Exception as exc:
+        if tmp_path.is_file():
+            try:
+                tmp_path.unlink()
+            except OSError:
+                pass
+        logger.warning(f"Failed to atomically write {file_path}: {exc}")
+        raise
 
 
 class AppState:
@@ -153,46 +176,115 @@ class AppState:
         return loaded_count
 
     def save_to_disk(self) -> None:
-        """Persist reviews and audit events locally to preserve state across restarts."""
+        """Persist reviews, audit events, extractions, validations and documents to disk."""
         try:
-            reviews_path = self.persistence_dir / "reviews.json"
-            audit_path = self.persistence_dir / "audit.json"
+            with self._lock:
+                all_reviews = [
+                    r.model_dump(mode="json") for r in self.review_service.list_reviews()
+                ]
+                all_events = [e.model_dump(mode="json") for e in self.audit_trail.get_events()]
+                all_extractions = {
+                    k: v.model_dump(mode="json") for k, v in self.extractions.items()
+                }
+                all_validations = {
+                    k: v.model_dump(mode="json") for k, v in self.validations.items()
+                }
+                all_docs = {k: v.model_dump(mode="json") for k, v in self.documents.items()}
+                all_paths = {k: str(v) for k, v in self.document_paths.items()}
 
-            all_reviews = [r.model_dump(mode="json") for r in self.review_service.list_reviews()]
-            all_events = [e.model_dump(mode="json") for e in self.audit_trail.get_events()]
+            _atomic_write_json(self.persistence_dir / "reviews.json", all_reviews)
+            _atomic_write_json(self.persistence_dir / "audit.json", all_events)
+            _atomic_write_json(self.persistence_dir / "extractions.json", all_extractions)
+            _atomic_write_json(self.persistence_dir / "validations.json", all_validations)
+            _atomic_write_json(self.persistence_dir / "documents.json", all_docs)
+            _atomic_write_json(self.persistence_dir / "paths.json", all_paths)
+        except Exception as exc:
+            logger.warning(f"Error persisting app state to disk: {exc}")
 
-            reviews_path.write_text(
-                json.dumps(all_reviews, indent=2, default=str), encoding="utf-8"
+    def _safe_load_json_file(self, file_path: Path) -> Any | None:
+        """Load JSON from disk safely; preserve corrupted snapshots with a timestamp backup."""
+        if not file_path.is_file():
+            return None
+        try:
+            return json.loads(file_path.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, UnicodeDecodeError, ValueError) as exc:
+            corrupt_backup = file_path.with_name(
+                f"{file_path.stem}.corrupted_{int(time.time())}{file_path.suffix}"
             )
-            audit_path.write_text(json.dumps(all_events, indent=2, default=str), encoding="utf-8")
-        except Exception:  # Non-fatal persistence logging
-            pass
+            try:
+                os.replace(file_path, corrupt_backup)
+                logger.error(
+                    f"Corrupted snapshot detected in {file_path}. Moved to {corrupt_backup}: {exc}"
+                )
+            except OSError as move_exc:
+                logger.error(f"Failed to move corrupted file {file_path}: {move_exc}")
+            return None
 
     def load_from_disk(self) -> None:
-        """Load persisted reviews and audit events from disk if available."""
-        try:
-            reviews_path = self.persistence_dir / "reviews.json"
-            audit_path = self.persistence_dir / "audit.json"
-
-            if audit_path.is_file():
-                raw_events = json.loads(audit_path.read_text(encoding="utf-8"))
-                for e_dict in raw_events:
+        """Load persisted reviews, audit events, extractions and documents from disk if available."""
+        # 1. Audit events
+        audit_data = self._safe_load_json_file(self.persistence_dir / "audit.json")
+        if isinstance(audit_data, list):
+            for e_dict in audit_data:
+                try:
                     evt = AuditEvent.model_validate(e_dict)
                     with self.audit_trail._lock:
                         if not any(x.event_id == evt.event_id for x in self.audit_trail._events):
                             self.audit_trail._events.append(evt)
+                except Exception as exc:
+                    logger.warning(f"Skipping malformed audit event: {exc}")
 
-            if reviews_path.is_file():
-                raw_reviews = json.loads(reviews_path.read_text(encoding="utf-8"))
-                for r_dict in raw_reviews:
+        # 2. Review records
+        reviews_data = self._safe_load_json_file(self.persistence_dir / "reviews.json")
+        if isinstance(reviews_data, list):
+            for r_dict in reviews_data:
+                try:
                     rev = ReviewRecord.model_validate(r_dict)
                     with self.review_service._lock:
                         self.review_service._reviews[rev.review_id] = rev
                         self.review_service._document_reviews.setdefault(
                             rev.document_id, []
                         ).append(rev.review_id)
-        except Exception:  # Non-fatal recovery fallback
-            pass
+                except Exception as exc:
+                    logger.warning(f"Skipping malformed review record: {exc}")
+
+        # 3. Documents metadata
+        docs_data = self._safe_load_json_file(self.persistence_dir / "documents.json")
+        if isinstance(docs_data, dict):
+            with self._lock:
+                for doc_id, m_dict in docs_data.items():
+                    try:
+                        self.documents[doc_id] = IngestionMetadata.model_validate(m_dict)
+                    except Exception as exc:
+                        logger.warning(f"Skipping malformed ingestion metadata for {doc_id}: {exc}")
+
+        # 4. Extractions
+        extractions_data = self._safe_load_json_file(self.persistence_dir / "extractions.json")
+        if isinstance(extractions_data, dict):
+            with self._lock:
+                for doc_id, ext_dict in extractions_data.items():
+                    try:
+                        self.extractions[doc_id] = InvoiceExtractionRecord.model_validate(ext_dict)
+                    except Exception as exc:
+                        logger.warning(f"Skipping malformed extraction record for {doc_id}: {exc}")
+
+        # 5. Validations
+        validations_data = self._safe_load_json_file(self.persistence_dir / "validations.json")
+        if isinstance(validations_data, dict):
+            with self._lock:
+                for doc_id, val_dict in validations_data.items():
+                    try:
+                        val_res = ValidationResult.model_validate(val_dict)
+                        self.validations[doc_id] = val_res
+                    except Exception as exc:
+                        logger.warning(f"Skipping malformed validation result for {doc_id}: {exc}")
+
+        # 6. Paths
+        paths_data = self._safe_load_json_file(self.persistence_dir / "paths.json")
+        if isinstance(paths_data, dict):
+            with self._lock:
+                for doc_id, p_str in paths_data.items():
+                    self.document_paths[doc_id] = Path(p_str)
 
 
 def get_app_state() -> AppState:

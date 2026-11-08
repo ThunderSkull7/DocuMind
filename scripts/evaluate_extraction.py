@@ -362,6 +362,51 @@ def run_structured_evaluation() -> dict:
             "evidence_valid_boxes": 0,
             "evidence_total": 0,
             "schema_valid": 0,
+            "field_metrics": {
+                "invoice_number": {
+                    "tp": 0,
+                    "fp": 0,
+                    "fn": 0,
+                    "tn": 0,
+                    "gold_present": 0,
+                    "gold_missing": 0,
+                },
+                "invoice_date": {
+                    "tp": 0,
+                    "fp": 0,
+                    "fn": 0,
+                    "tn": 0,
+                    "gold_present": 0,
+                    "gold_missing": 0,
+                    "ambiguous": 0,
+                },
+                "vendor_name": {
+                    "tp": 0,
+                    "fp": 0,
+                    "fn": 0,
+                    "tn": 0,
+                    "gold_present": 0,
+                    "gold_missing": 0,
+                },
+                "currency": {
+                    "tp": 0,
+                    "fp": 0,
+                    "fn": 0,
+                    "tn": 0,
+                    "gold_present": 0,
+                    "gold_missing": 0,
+                },
+                "subtotal": {
+                    "tp": 0,
+                    "fp": 0,
+                    "fn": 0,
+                    "tn": 0,
+                    "gold_present": 0,
+                    "gold_missing": 0,
+                },
+                "tax": {"tp": 0, "fp": 0, "fn": 0, "tn": 0, "gold_present": 0, "gold_missing": 0},
+                "total": {"tp": 0, "fp": 0, "fn": 0, "tn": 0, "gold_present": 0, "gold_missing": 0},
+            },
         },
         "scanned": {
             "count": 0,
@@ -376,6 +421,51 @@ def run_structured_evaluation() -> dict:
             "evidence_valid_boxes": 0,
             "evidence_total": 0,
             "schema_valid": 0,
+            "field_metrics": {
+                "invoice_number": {
+                    "tp": 0,
+                    "fp": 0,
+                    "fn": 0,
+                    "tn": 0,
+                    "gold_present": 0,
+                    "gold_missing": 0,
+                },
+                "invoice_date": {
+                    "tp": 0,
+                    "fp": 0,
+                    "fn": 0,
+                    "tn": 0,
+                    "gold_present": 0,
+                    "gold_missing": 0,
+                    "ambiguous": 0,
+                },
+                "vendor_name": {
+                    "tp": 0,
+                    "fp": 0,
+                    "fn": 0,
+                    "tn": 0,
+                    "gold_present": 0,
+                    "gold_missing": 0,
+                },
+                "currency": {
+                    "tp": 0,
+                    "fp": 0,
+                    "fn": 0,
+                    "tn": 0,
+                    "gold_present": 0,
+                    "gold_missing": 0,
+                },
+                "subtotal": {
+                    "tp": 0,
+                    "fp": 0,
+                    "fn": 0,
+                    "tn": 0,
+                    "gold_present": 0,
+                    "gold_missing": 0,
+                },
+                "tax": {"tp": 0, "fp": 0, "fn": 0, "tn": 0, "gold_present": 0, "gold_missing": 0},
+                "total": {"tp": 0, "fp": 0, "fn": 0, "tn": 0, "gold_present": 0, "gold_missing": 0},
+            },
         },
         "ambiguous_dates": [],
         "missing_fields": [],
@@ -389,6 +479,7 @@ def run_structured_evaluation() -> dict:
         doc_type = entry["document_type"]  # "digital" or "scanned"
         bucket = stats[doc_type]
         bucket["count"] += 1
+        fm = bucket["field_metrics"]
 
         pdf_path = Path("data/synthetic_documents") / entry["file_name"]
         ann_path = Path("data/annotations") / f"{doc_id}.json"
@@ -408,61 +499,141 @@ def run_structured_evaluation() -> dict:
         # 1. Invoice Number
         gold_inv = annotation.get("invoice_number")
         ext_inv = rf.get("invoice_number")
-        if gold_inv == ext_inv:
-            bucket["inv_num_correct"] += 1
-        elif (
-            gold_inv is None
-            and rec.evidence.get("invoice_number", {}).status == EvidenceStatus.MISSING
-        ):
-            bucket["inv_num_correct"] += 1
-            stats["missing_fields"].append((doc_id, "invoice_number"))
+        ev_inv = rec.evidence.get("invoice_number")
+        if gold_inv is not None:
+            fm["invoice_number"]["gold_present"] += 1
+            if ext_inv == gold_inv:
+                fm["invoice_number"]["tp"] += 1
+                bucket["inv_num_correct"] += 1
+            else:
+                fm["invoice_number"]["fn"] += 1
+                stats["discrepancies"].append((doc_id, "invoice_number", gold_inv, ext_inv))
         else:
-            stats["discrepancies"].append((doc_id, "invoice_number", gold_inv, ext_inv))
+            fm["invoice_number"]["gold_missing"] += 1
+            if ext_inv is None or (ev_inv and ev_inv.status == EvidenceStatus.MISSING):
+                fm["invoice_number"]["tn"] += 1
+                bucket["inv_num_correct"] += 1
+                stats["missing_fields"].append((doc_id, "invoice_number"))
+            else:
+                fm["invoice_number"]["fp"] += 1
+                stats["discrepancies"].append((doc_id, "invoice_number", gold_inv, ext_inv))
 
         # 2. Invoice Date
         gold_date = annotation.get("invoice_date")
         ext_date = rf.get("invoice_date")
         ev_date = rec.evidence.get("invoice_date")
-        if ev_date and ev_date.status == EvidenceStatus.AMBIGUOUS:
-            stats["ambiguous_dates"].append((doc_id, ev_date.raw_text, ev_date.candidates))
-            bucket["inv_date_correct"] += 1  # Successfully identified and flagged ambiguous date
-        elif ext_date and ext_date.isoformat() == gold_date:
-            bucket["inv_date_correct"] += 1
-        elif gold_date is None and (ev_date is None or ev_date.status == EvidenceStatus.MISSING):
-            bucket["inv_date_correct"] += 1
+        if gold_date is not None:
+            fm["invoice_date"]["gold_present"] += 1
+            if ev_date and ev_date.status == EvidenceStatus.AMBIGUOUS:
+                fm["invoice_date"]["ambiguous"] += 1
+                stats["ambiguous_dates"].append((doc_id, ev_date.raw_text, ev_date.candidates))
+                bucket["inv_date_correct"] += 1
+            elif ext_date and ext_date.isoformat() == gold_date:
+                fm["invoice_date"]["tp"] += 1
+                bucket["inv_date_correct"] += 1
+            else:
+                fm["invoice_date"]["fn"] += 1
+                stats["discrepancies"].append((doc_id, "invoice_date", gold_date, ext_date))
         else:
-            stats["discrepancies"].append((doc_id, "invoice_date", gold_date, ext_date))
+            fm["invoice_date"]["gold_missing"] += 1
+            if ext_date is None or (ev_date and ev_date.status == EvidenceStatus.MISSING):
+                fm["invoice_date"]["tn"] += 1
+                bucket["inv_date_correct"] += 1
+            else:
+                fm["invoice_date"]["fp"] += 1
+                stats["discrepancies"].append((doc_id, "invoice_date", gold_date, ext_date))
 
         # 3. Vendor Name
         gold_vend = annotation.get("vendor_name")
         ext_vend = rf.get("vendor_name")
-        if gold_vend == ext_vend:
-            bucket["vendor_correct"] += 1
-        elif (
-            gold_vend is None
-            and rec.evidence.get("vendor_name", {}).status == EvidenceStatus.MISSING
-        ):
-            bucket["vendor_correct"] += 1
-            stats["missing_fields"].append((doc_id, "vendor_name"))
+        ev_vend = rec.evidence.get("vendor_name")
+        if gold_vend is not None:
+            fm["vendor_name"]["gold_present"] += 1
+            if ext_vend == gold_vend:
+                fm["vendor_name"]["tp"] += 1
+                bucket["vendor_correct"] += 1
+            else:
+                fm["vendor_name"]["fn"] += 1
+                stats["discrepancies"].append((doc_id, "vendor_name", gold_vend, ext_vend))
         else:
-            stats["discrepancies"].append((doc_id, "vendor_name", gold_vend, ext_vend))
+            fm["vendor_name"]["gold_missing"] += 1
+            if ext_vend is None or (ev_vend and ev_vend.status == EvidenceStatus.MISSING):
+                fm["vendor_name"]["tn"] += 1
+                bucket["vendor_correct"] += 1
+                stats["missing_fields"].append((doc_id, "vendor_name"))
+            else:
+                fm["vendor_name"]["fp"] += 1
+                stats["discrepancies"].append((doc_id, "vendor_name", gold_vend, ext_vend))
 
         # 4. Currency
-        if annotation.get("currency") == rf.get("currency"):
-            bucket["currency_correct"] += 1
+        gold_curr = annotation.get("currency")
+        ext_curr = rf.get("currency")
+        if gold_curr is not None:
+            fm["currency"]["gold_present"] += 1
+            if ext_curr == gold_curr:
+                fm["currency"]["tp"] += 1
+                bucket["currency_correct"] += 1
+            else:
+                fm["currency"]["fn"] += 1
+        else:
+            fm["currency"]["gold_missing"] += 1
+            if ext_curr is None:
+                fm["currency"]["tn"] += 1
+                bucket["currency_correct"] += 1
+            else:
+                fm["currency"]["fp"] += 1
 
         # 5. Financial Summary
         gold_sub = Decimal(annotation["subtotal"]) if annotation.get("subtotal") else None
-        if gold_sub == rf.get("subtotal"):
-            bucket["subtotal_correct"] += 1
+        ext_sub = rf.get("subtotal")
+        if gold_sub is not None:
+            fm["subtotal"]["gold_present"] += 1
+            if ext_sub == gold_sub:
+                fm["subtotal"]["tp"] += 1
+                bucket["subtotal_correct"] += 1
+            else:
+                fm["subtotal"]["fn"] += 1
+        else:
+            fm["subtotal"]["gold_missing"] += 1
+            if ext_sub is None:
+                fm["subtotal"]["tn"] += 1
+                bucket["subtotal_correct"] += 1
+            else:
+                fm["subtotal"]["fp"] += 1
 
         gold_tax = Decimal(annotation["tax"]) if annotation.get("tax") else None
-        if gold_tax == rf.get("tax"):
-            bucket["tax_correct"] += 1
+        ext_tax = rf.get("tax")
+        if gold_tax is not None:
+            fm["tax"]["gold_present"] += 1
+            if ext_tax == gold_tax:
+                fm["tax"]["tp"] += 1
+                bucket["tax_correct"] += 1
+            else:
+                fm["tax"]["fn"] += 1
+        else:
+            fm["tax"]["gold_missing"] += 1
+            if ext_tax is None:
+                fm["tax"]["tn"] += 1
+                bucket["tax_correct"] += 1
+            else:
+                fm["tax"]["fp"] += 1
 
         gold_tot = Decimal(annotation["total"]) if annotation.get("total") else None
-        if gold_tot == rf.get("total"):
-            bucket["total_correct"] += 1
+        ext_tot = rf.get("total")
+        if gold_tot is not None:
+            fm["total"]["gold_present"] += 1
+            if ext_tot == gold_tot:
+                fm["total"]["tp"] += 1
+                bucket["total_correct"] += 1
+            else:
+                fm["total"]["fn"] += 1
+        else:
+            fm["total"]["gold_missing"] += 1
+            if ext_tot is None:
+                fm["total"]["tn"] += 1
+                bucket["total_correct"] += 1
+            else:
+                fm["total"]["fp"] += 1
 
         # 6. Line Items
         items = rf.get("line_items", [])
@@ -481,16 +652,109 @@ def run_structured_evaluation() -> dict:
     return stats
 
 
+def _calc_prf1(tp: int, fp: int, fn: int) -> tuple[float, float, float]:
+    """Calculate Precision, Recall, and F1 percentage."""
+    prec = (tp / (tp + fp)) * 100.0 if (tp + fp) > 0 else 100.0
+    rec = (tp / (tp + fn)) * 100.0 if (tp + fn) > 0 else 100.0
+    f1 = (2 * prec * rec / (prec + rec)) if (prec + rec) > 0 else 0.0
+    return prec, rec, f1
+
+
 def generate_structured_report(stats: dict, output_path: Path) -> None:
     """Generate Phase 4 Structured Extraction Evaluation Report."""
     d = stats["digital"]
     s = stats["scanned"]
+    d_fm = d["field_metrics"]
+    s_fm = s["field_metrics"]
+
+    fields = [
+        "invoice_number",
+        "invoice_date",
+        "vendor_name",
+        "currency",
+        "subtotal",
+        "tax",
+        "total",
+    ]
+    field_labels = {
+        "invoice_number": "Invoice Number",
+        "invoice_date": "Invoice Date",
+        "vendor_name": "Vendor Name",
+        "currency": "Currency",
+        "subtotal": "Subtotal Amount",
+        "tax": "Tax Amount",
+        "total": "Total Amount",
+    }
+
+    # Generate Precision / Recall / F1 table
+    prf_rows = []
+    for f in fields:
+        dfm = d_fm[f]
+        sfm = s_fm[f]
+        tot_tp = dfm["tp"] + sfm["tp"]
+        tot_fp = dfm["fp"] + sfm["fp"]
+        tot_fn = dfm["fn"] + sfm["fn"]
+        tot_tn = dfm["tn"] + sfm["tn"]
+        tot_pres = dfm["gold_present"] + sfm["gold_present"]
+        tot_miss = dfm["gold_missing"] + sfm["gold_missing"]
+        amb = dfm.get("ambiguous", 0) + sfm.get("ambiguous", 0)
+
+        prec, rec, f1 = _calc_prf1(tot_tp, tot_fp, tot_fn)
+        prf_rows.append(
+            f"| **{field_labels[f]}** | {tot_pres} | {tot_tp}/{tot_pres} | {tot_miss} | {tot_tn}/{tot_miss} | {amb} | {prec:.1f}% | {rec:.1f}% | {f1:.1f}% |"
+        )
+
+    prf_table = "\n".join(prf_rows)
+
+    fields = [
+        "invoice_number",
+        "invoice_date",
+        "vendor_name",
+        "currency",
+        "subtotal",
+        "tax",
+        "total",
+    ]
+    field_labels = {
+        "invoice_number": "Invoice Number",
+        "invoice_date": "Invoice Date",
+        "vendor_name": "Vendor Name",
+        "currency": "Currency",
+        "subtotal": "Subtotal Amount",
+        "tax": "Tax Amount",
+        "total": "Total Amount",
+    }
+
+    # Generate Precision / Recall / F1 table
+    prf_rows = []
+    for f in fields:
+        dfm = d_fm[f]
+        sfm = s_fm[f]
+        tot_tp = dfm["tp"] + sfm["tp"]
+        tot_fp = dfm["fp"] + sfm["fp"]
+        tot_fn = dfm["fn"] + sfm["fn"]
+        tot_tn = dfm["tn"] + sfm["tn"]
+        tot_pres = dfm["gold_present"] + sfm["gold_present"]
+        tot_miss = dfm["gold_missing"] + sfm["gold_missing"]
+        amb = dfm.get("ambiguous", 0) + sfm.get("ambiguous", 0)
+
+        prec, rec, f1 = _calc_prf1(tot_tp, tot_fp, tot_fn)
+        prf_rows.append(
+            f"| **{field_labels[f]}** | {tot_pres} | {tot_tp}/{tot_pres} | {tot_miss} | {tot_tn}/{tot_miss} | {amb} | {prec:.1f}% | {rec:.1f}% | {f1:.1f}% |"
+        )
+
+    prf_table = "\n".join(prf_rows)
 
     rep = f"""# DocuMind Phase 4 — Structured Invoice Field Extraction & Evidence Evaluation Report
 
-**Evaluation Date**: 2026-11-08\n
-**DocuMind Version**: {__version__}\n
+**Evaluation Date**: 2026-11-08
+**DocuMind Version**: {__version__}
 **Evaluation Scope**: 50 Synthetic Documents (30 Digital Vector PDFs, 20 Scanned Image PDFs)
+
+> [!IMPORTANT]
+> **Evaluation Scope & Denominators**: This benchmark evaluates deterministic extraction rules against the 50-document synthetic invoice corpus. Performance metrics are reported with explicit denominators distinguishing documents where fields are present from documents where fields are intentionally absent or ambiguous. Results on this corpus demonstrate deterministic rule correctness and coordinate grounding, and should not be construed as universal generalization to unconstrained real-world documents.
+>
+> **OCR Confidence**: OCR confidence values are uncalibrated raw heuristic scores provided directly by the local Tesseract OCR engine; no statistical calibration has been performed.
 
 ---
 
@@ -498,18 +762,24 @@ def generate_structured_report(stats: dict, output_path: Path) -> None:
 
 Phase 4 implements deterministic, explainable structured field extraction and evidence grounding on top of Phase 3's hybrid extraction output. Every extracted value is anchored with exact spatial coordinates in PDF point units, source provenance (native vs. OCR), and honest uncertainty handling for missing fields and ambiguous date formats.
 
-### Structured Extraction Accuracy Matrix
+### Rigorous Value Extraction & Identification Matrix (Precision, Recall & F1)
 
-| Category / Field | Digital Corpus (30 docs) | Scanned Corpus (20 docs) | Overall Corpus (50 docs) |
+| Field | Gold Present | Extracted (TP) | Gold Missing | Detected Missing (TN) | Ambiguous | Precision | Recall | F1 Score |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+{prf_table}
+
+### Overall Subsystem Performance by Document Format
+
+| Metric / Dimension | Digital Corpus (30 docs) | Scanned Corpus (20 docs) | Overall Corpus (50 docs) |
 | :--- | :---: | :---: | :---: |
-| **Invoice Number** | **{d["inv_num_correct"]}/{d["count"]}** ({d["inv_num_correct"] / d["count"] * 100:.1f}%) | **{s["inv_num_correct"]}/{s["count"]}** ({s["inv_num_correct"] / s["count"] * 100:.1f}%) | **{d["inv_num_correct"] + s["inv_num_correct"]}/50** ({(d["inv_num_correct"] + s["inv_num_correct"]) / 50 * 100:.1f}%) |
-| **Invoice Date** | **{d["inv_date_correct"]}/{d["count"]}** ({d["inv_date_correct"] / d["count"] * 100:.1f}%) | **{s["inv_date_correct"]}/{s["count"]}** ({s["inv_date_correct"] / s["count"] * 100:.1f}%) | **{d["inv_date_correct"] + s["inv_date_correct"]}/50** ({(d["inv_date_correct"] + s["inv_date_correct"]) / 50 * 100:.1f}%) |
-| **Vendor Name** | **{d["vendor_correct"]}/{d["count"]}** ({d["vendor_correct"] / d["count"] * 100:.1f}%) | **{s["vendor_correct"]}/{s["count"]}** ({s["vendor_correct"] / s["count"] * 100:.1f}%) | **{d["vendor_correct"] + s["vendor_correct"]}/50** ({(d["vendor_correct"] + s["vendor_correct"]) / 50 * 100:.1f}%) |
+| **Invoice Number Exact/Correct** | **{d["inv_num_correct"]}/{d["count"]}** ({d["inv_num_correct"] / d["count"] * 100:.1f}%) | **{s["inv_num_correct"]}/{s["count"]}** ({s["inv_num_correct"] / s["count"] * 100:.1f}%) | **{d["inv_num_correct"] + s["inv_num_correct"]}/50** ({(d["inv_num_correct"] + s["inv_num_correct"]) / 50 * 100:.1f}%) |
+| **Invoice Date Exact/Correct** | **{d["inv_date_correct"]}/{d["count"]}** ({d["inv_date_correct"] / d["count"] * 100:.1f}%) | **{s["inv_date_correct"]}/{s["count"]}** ({s["inv_date_correct"] / s["count"] * 100:.1f}%) | **{d["inv_date_correct"] + s["inv_date_correct"]}/50** ({(d["inv_date_correct"] + s["inv_date_correct"]) / 50 * 100:.1f}%) |
+| **Vendor Name Exact/Correct** | **{d["vendor_correct"]}/{d["count"]}** ({d["vendor_correct"] / d["count"] * 100:.1f}%) | **{s["vendor_correct"]}/{s["count"]}** ({s["vendor_correct"] / s["count"] * 100:.1f}%) | **{d["vendor_correct"] + s["vendor_correct"]}/50** ({(d["vendor_correct"] + s["vendor_correct"]) / 50 * 100:.1f}%) |
 | **Document Currency** | **{d["currency_correct"]}/{d["count"]}** ({d["currency_correct"] / d["count"] * 100:.1f}%) | **{s["currency_correct"]}/{s["count"]}** ({s["currency_correct"] / s["count"] * 100:.1f}%) | **{d["currency_correct"] + s["currency_correct"]}/50** ({(d["currency_correct"] + s["currency_correct"]) / 50 * 100:.1f}%) |
 | **Subtotal Amount** | **{d["subtotal_correct"]}/{d["count"]}** ({d["subtotal_correct"] / d["count"] * 100:.1f}%) | **{s["subtotal_correct"]}/{s["count"]}** ({s["subtotal_correct"] / s["count"] * 100:.1f}%) | **{d["subtotal_correct"] + s["subtotal_correct"]}/50** ({(d["subtotal_correct"] + s["subtotal_correct"]) / 50 * 100:.1f}%) |
 | **Tax Amount** | **{d["tax_correct"]}/{d["count"]}** ({d["tax_correct"] / d["count"] * 100:.1f}%) | **{s["tax_correct"]}/{s["count"]}** ({s["tax_correct"] / s["count"] * 100:.1f}%) | **{d["tax_correct"] + s["tax_correct"]}/50** ({(d["tax_correct"] + s["tax_correct"]) / 50 * 100:.1f}%) |
 | **Total Amount** | **{d["total_correct"]}/{d["count"]}** ({d["total_correct"] / d["count"] * 100:.1f}%) | **{s["total_correct"]}/{s["count"]}** ({s["total_correct"] / s["count"] * 100:.1f}%) | **{d["total_correct"] + s["total_correct"]}/50** ({(d["total_correct"] + s["total_correct"]) / 50 * 100:.1f}%) |
-| **Total Line Items** | **{d["items_extracted"]} items** | **{s["items_extracted"]} items** | **{d["items_extracted"] + s["items_extracted"]} items** |
+| **Total Line Items Extracted** | **{d["items_extracted"]} items** | **{s["items_extracted"]} items** | **{d["items_extracted"] + s["items_extracted"]} items** |
 | **Evidence Box Validity** | **100.0%** ({d["evidence_valid_boxes"]}/{d["evidence_total"]}) | **100.0%** ({s["evidence_valid_boxes"]}/{s["evidence_total"]}) | **100.0%** ({(d["evidence_valid_boxes"] + s["evidence_valid_boxes"]) / (d["evidence_total"] + s["evidence_total"]) * 100:.1f}%) |
 | **Pydantic Schema Pass** | **{d["schema_valid"]}/{d["count"]}** ({d["schema_valid"] / d["count"] * 100:.1f}%) | **{s["schema_valid"]}/{s["count"]}** ({s["schema_valid"] / s["count"] * 100:.1f}%) | **{d["schema_valid"] + s["schema_valid"]}/50** ({(d["schema_valid"] + s["schema_valid"]) / 50 * 100:.1f}%) |
 

@@ -208,3 +208,4 @@ The presentation layer guarantees:
 - **ADR 0005**: Deterministic Business Rule Validation, Arithmetic Consistency & Discrepancy Detection (`docs/decisions/0005-business-rule-validation-and-discrepancies.md`).
 - **ADR 0006**: Human Review Workflow, Non-Destructive Corrections & Append-Only Audit Trail (`docs/decisions/0006-human-review-and-audit-trail.md`).
 - **ADR 0007**: Streamlit Application Architecture, Evidence Highlighting & Auditable Reporting (`docs/decisions/0007-streamlit-application-and-reporting.md`).
+- **ADR 0008**: State Persistence Hardening, Snapshot Corruption Resilience & Evaluation Rigor (`docs/decisions/0008-state-persistence-and-security-hardening.md`).

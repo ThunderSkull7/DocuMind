@@ -206,11 +206,14 @@ The centerpiece of the DocuMind human review process, featuring a side-by-side i
 DocuMind includes a comprehensive automated test suite and evaluation script:
 
 ```powershell
-# Run full pytest test suite (155+ tests)
-pytest -v
+# Run full pytest test suite (175+ tests) with coverage
+pytest -v --cov=src/documind --cov-report=term-missing
 
 # Run extraction & business validation benchmark across the 50-document corpus
 python scripts/evaluate_extraction.py
+
+# Run empirical performance benchmark
+python scripts/benchmark_performance.py
 
 # Run code style & formatting checks
 ruff check .
@@ -219,8 +222,11 @@ ruff format --check .
 
 ---
 
-## 5. Security & Privacy Notes
+## 5. Security, Persistence & Privacy Notes
 
 - **Local Processing**: All PDF extraction, OCR processing, and business validations occur 100% locally on the host machine. No documents or extracted texts are transmitted to external cloud APIs.
 - **PII-Safe Logging**: Structured logging automatically redacts sensitive financial figures and personal identifiers unless `DOCUMIND_LOG_PII=true` is explicitly enabled for development.
 - **File System Isolation**: Uploaded documents are saved under isolated UUID directories with strict traversal checks.
+- **Atomic State Persistence**: Application state is saved atomically via `.tmp` files and `os.replace`. If an interrupted write or corrupted snapshot is detected, DocuMind creates a `.corrupted_<timestamp>` backup for forensic inspection and initializes safely without crashing.
+- **Formula-Injection Defense (CWE-1236)**: All tabular CSV exports automatically neutralize executable expressions by prepending single quotes to leading trigger characters.
+

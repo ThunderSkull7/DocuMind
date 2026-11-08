@@ -24,7 +24,7 @@ This report establishes the empirical performance and verification of DocuMind's
 | **Avg. Words / Page** | 77.5 words | 78.5 words | 77.9 words |
 | **Avg. Word Bounding Boxes** | 77.5 / page | 78.5 / page | — |
 | **Mean OCR Confidence** | `None` (Explicit) | **0.9405** (Uncalibrated) | — |
-| **Avg. Latency / Document** | 2.44 ms | 957.74 ms | 402.55 ms |
+| **Avg. Latency / Document** | 2.49 ms | 1001.70 ms | 422.49 ms |
 
 ---
 
@@ -77,26 +77,26 @@ All 30 digital vector documents (`DOC-SYN-001` to `DOC-SYN-030`) were evaluated:
 
 | Document ID | Layout Style | Skew Angle | DPI | OCR Words | OCR Chars | Avg. Conf | Duration | Status |
 | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| `DOC-SYN-031` | scanned | variance | 300 | 79 | 517 | 0.93 | 925.1 ms | ✅ success |
-| `DOC-SYN-032` | scanned | variance | 300 | 78 | 515 | 0.95 | 940.8 ms | ✅ success |
-| `DOC-SYN-033` | scanned | variance | 300 | 80 | 538 | 0.94 | 1011.6 ms | ✅ success |
-| `DOC-SYN-034` | scanned | variance | 300 | 78 | 517 | 0.95 | 978.5 ms | ✅ success |
-| `DOC-SYN-035` | scanned | variance | 300 | 79 | 516 | 0.95 | 887.4 ms | ✅ success |
-| `DOC-SYN-036` | scanned | variance | 300 | 81 | 507 | 0.94 | 960.9 ms | ✅ success |
-| `DOC-SYN-037` | scanned | variance | 300 | 79 | 516 | 0.93 | 975.4 ms | ✅ success |
-| `DOC-SYN-038` | scanned | variance | 300 | 80 | 528 | 0.94 | 948.1 ms | ✅ success |
-| `DOC-SYN-039` | scanned | variance | 300 | 76 | 514 | 0.95 | 957.2 ms | ✅ success |
-| `DOC-SYN-040` | scanned | variance | 300 | 80 | 527 | 0.95 | 1029.3 ms | ✅ success |
-| `DOC-SYN-041` | scanned | variance | 300 | 76 | 497 | 0.93 | 942.4 ms | ✅ success |
-| `DOC-SYN-042` | scanned | variance | 300 | 70 | 461 | 0.93 | 974.9 ms | ✅ success |
-| `DOC-SYN-043` | scanned | variance | 300 | 80 | 535 | 0.94 | 957.0 ms | ✅ success |
-| `DOC-SYN-044` | scanned | variance | 300 | 80 | 532 | 0.95 | 972.1 ms | ✅ success |
-| `DOC-SYN-045` | scanned | variance | 300 | 77 | 527 | 0.94 | 963.4 ms | ✅ success |
-| `DOC-SYN-046` | scanned | variance | 300 | 79 | 502 | 0.94 | 968.5 ms | ✅ success |
-| `DOC-SYN-047` | scanned | variance | 300 | 79 | 513 | 0.94 | 876.9 ms | ✅ success |
-| `DOC-SYN-048` | scanned | variance | 300 | 81 | 518 | 0.95 | 963.3 ms | ✅ success |
-| `DOC-SYN-049` | scanned | variance | 300 | 76 | 507 | 0.94 | 955.4 ms | ✅ success |
-| `DOC-SYN-050` | scanned | variance | 300 | 81 | 536 | 0.94 | 966.6 ms | ✅ success |
+| `DOC-SYN-031` | scanned | variance | 300 | 79 | 517 | 0.93 | 969.6 ms | ✅ success |
+| `DOC-SYN-032` | scanned | variance | 300 | 78 | 515 | 0.95 | 958.3 ms | ✅ success |
+| `DOC-SYN-033` | scanned | variance | 300 | 80 | 538 | 0.94 | 997.7 ms | ✅ success |
+| `DOC-SYN-034` | scanned | variance | 300 | 78 | 517 | 0.95 | 1010.9 ms | ✅ success |
+| `DOC-SYN-035` | scanned | variance | 300 | 79 | 516 | 0.95 | 908.3 ms | ✅ success |
+| `DOC-SYN-036` | scanned | variance | 300 | 81 | 507 | 0.94 | 1028.5 ms | ✅ success |
+| `DOC-SYN-037` | scanned | variance | 300 | 79 | 516 | 0.93 | 968.8 ms | ✅ success |
+| `DOC-SYN-038` | scanned | variance | 300 | 80 | 528 | 0.94 | 987.2 ms | ✅ success |
+| `DOC-SYN-039` | scanned | variance | 300 | 76 | 514 | 0.95 | 1064.1 ms | ✅ success |
+| `DOC-SYN-040` | scanned | variance | 300 | 80 | 527 | 0.95 | 1057.0 ms | ✅ success |
+| `DOC-SYN-041` | scanned | variance | 300 | 76 | 497 | 0.93 | 1013.7 ms | ✅ success |
+| `DOC-SYN-042` | scanned | variance | 300 | 70 | 461 | 0.93 | 991.0 ms | ✅ success |
+| `DOC-SYN-043` | scanned | variance | 300 | 80 | 535 | 0.94 | 992.1 ms | ✅ success |
+| `DOC-SYN-044` | scanned | variance | 300 | 80 | 532 | 0.95 | 1031.3 ms | ✅ success |
+| `DOC-SYN-045` | scanned | variance | 300 | 77 | 527 | 0.94 | 1018.8 ms | ✅ success |
+| `DOC-SYN-046` | scanned | variance | 300 | 79 | 502 | 0.94 | 1062.2 ms | ✅ success |
+| `DOC-SYN-047` | scanned | variance | 300 | 79 | 513 | 0.94 | 953.5 ms | ✅ success |
+| `DOC-SYN-048` | scanned | variance | 300 | 81 | 518 | 0.95 | 1009.9 ms | ✅ success |
+| `DOC-SYN-049` | scanned | variance | 300 | 76 | 507 | 0.94 | 930.1 ms | ✅ success |
+| `DOC-SYN-050` | scanned | variance | 300 | 81 | 536 | 0.94 | 1081.0 ms | ✅ success |
 
 ---
 

@@ -211,7 +211,7 @@ with col_viewer:
     # Page navigation controls
     total_doc_pages = 1
     if pdf_path:
-        import fitz
+        import pymupdf as fitz
 
         with fitz.open(pdf_path) as _d:
             total_doc_pages = _d.page_count

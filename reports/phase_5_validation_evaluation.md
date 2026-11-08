@@ -24,7 +24,7 @@ The validation subsystem operates non-destructively: all findings are recorded a
 | **`INDETERMINATE`** | **0** (0.0%) | **0** (0.0%) | **0** (0.0%) | 0.0% |
 | **Total** | **30** (100.0%) | **20** (100.0%) | **50** (100.0%) | 100.0% |
 
-- **Mean Validation Latency**: 0.16 ms per document (excluding raw OCR rasterization).
+- **Mean Validation Latency**: 0.15 ms per document (excluding raw OCR rasterization).
 - **Floating-Point Drift**: **Zero**. All arithmetic computations utilize `Decimal` with half-up cent precision.
 
 ---

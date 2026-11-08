@@ -50,3 +50,4 @@ Key architectural challenges include:
 
 ### Limitations
 - Single-instance local JSON persistence: Suitable for local evaluation, workstation use, and pilot deployments. Not designed for distributed, multi-tenant concurrent writes. Multi-operator environments will migrate persistence to a relational database in future phases.
+

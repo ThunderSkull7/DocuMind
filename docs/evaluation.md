@@ -130,7 +130,11 @@ python scripts/evaluate_extraction.py
 
 Produces:
 1. `reports/phase_3_extraction_evaluation.md`: Routing decisions, OCR confidences, latencies, character densities.
-2. `reports/phase_4_structured_extraction_evaluation.md`: Structured accuracy, line-item counts, evidence box validity, schema pass rates.
+2. `reports/phase_4_structured_extraction_evaluation.md`: Precision/Recall/F1 matrix, structured accuracy, line-item counts, evidence box validity, schema pass rates.
 3. `reports/phase_5_validation_evaluation.md`: Business validation statuses, discrepancy distributions, rule catalogue performance, and edge-case classification.
 4. `reports/phase_6_review_evaluation.md`: Review workflow state transitions, correction versioning, re-validation gateways, and audit trail guarantees.
 5. `reports/phase_7_application_evaluation.md`: Web application topology, evidence visualization fidelity, approval gateways, and formula injection sanitization.
+6. `reports/DOCUMIND_FINAL_TECHNICAL_AUDIT.md`: Complete lifecycle audit, defect remediation, and system verification.
+7. `reports/DOCUMIND_FINAL_EVALUATION.md`: Multi-tier evaluation benchmark, explicit denominators, and latency breakdowns.
+8. `reports/DOCUMIND_SECURITY_REVIEW.md`: Security analysis (CWE-22, CWE-1236, DoS limits, local processing).
+9. `reports/DOCUMIND_PUBLICATION_READINESS.md`: Five-level operational readiness assessment and reproducibility guide.
