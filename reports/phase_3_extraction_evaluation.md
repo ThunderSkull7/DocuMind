@@ -2,79 +2,105 @@
 
 **Evaluation Date**: 2026-11-08  
 **DocuMind Version**: 0.1.0  
-**Engine Environment**: PyMuPDF `2.1`, Tesseract binary available: `False`
+**Engine Environment**: PyMuPDF `2.1`, Tesseract OCR binary: `C:\Program Files\Tesseract-OCR\tesseract.exe` (Available: `True`)
 
 ---
 
-## 1. Executive Summary
+## 1. Executive Summary & Verification Verdict
 
-This report evaluates the performance, routing accuracy, and throughput of DocuMind's hybrid PDF extraction subsystem across the official 50-document synthetic invoice corpus (30 digital vector PDFs, 20 scanned image-based PDFs).
+This report establishes the empirical performance and verification of DocuMind's hybrid extraction pipeline across the complete 50-document synthetic invoice corpus (30 digital vector PDFs, 20 scanned image-based PDFs).
+
+### Benchmark Matrix
 
 | Metric | Digital Corpus (30 docs) | Scanned Corpus (20 docs) | Total Corpus (50 docs) |
 | :--- | :---: | :---: | :---: |
 | **Documents Evaluated** | 30 | 20 | 50 |
 | **Total Pages Processed** | 32 | 20 | 52 |
 | **Native Text Routing Rate** | **100.0%** (32/32) | 0.0% (0/20) | 61.5% (32/52) |
-| **OCR Fallback Routing Rate** | 0.0% (0/32) | **100.0%** (20/20 requested) | 38.5% (20/52) |
-| **Extraction Status** | **100% SUCCESS** | 100% SUCCESS (OCR Warning Logged) | **100% Processed** |
-| **Avg. Characters / Page** | 512.3 chars | 0.0 chars | — |
-| **Avg. Words / Page** | 77.5 words | 0.0 words | — |
-| **Avg. Latency / Document** | 2.50 ms | 9.86 ms | 5.44 ms |
+| **OCR Fallback Routing Rate** | 0.0% (0/32) | **100.0%** (20/20) | 38.5% (20/52) |
+| **Extraction Success Rate** | **100.0%** (30/30) | **100.0%** (20/20) | **100.0%** (50/50) |
+| **Total Errors / Timeouts** | 0 | 0 | 0 |
+| **Avg. Characters / Page** | 512.3 chars | 516.1 chars | 513.8 chars |
+| **Avg. Words / Page** | 77.5 words | 78.5 words | 77.9 words |
+| **Avg. Word Bounding Boxes** | 77.5 / page | 78.5 / page | — |
+| **Mean OCR Confidence** | `None` (Explicit) | **0.9405** (Uncalibrated) | — |
+| **Avg. Latency / Document** | 2.58 ms | 1024.50 ms | 411.35 ms |
 
 ---
 
 ## 2. Extraction Configuration & Thresholds
 
-The following configuration parameters were active during evaluation:
 - `DOCUMIND_ROUTING_MIN_CHAR_COUNT`: `50` characters
 - `DOCUMIND_ROUTING_MIN_ALPHA_RATIO`: `0.4` (40% alphanumeric ratio)
 - `DOCUMIND_ROUTING_MIN_WORD_COUNT`: `5` words
 - `DOCUMIND_OCR_ENABLED`: `True`
 - `DOCUMIND_OCR_DPI`: `300` DPI
-- `DOCUMIND_OCR_PSM`: `3` (Automatic page segmentation)
+- `DOCUMIND_OCR_PSM`: `3` (Fully automatic page segmentation)
+- `DOCUMIND_OCR_TIMEOUT_SECONDS`: `30` seconds
 
 ---
 
-## 3. Digital PDF Extraction Analysis (30 Documents)
+## 3. Real OCR Verification on Scanned Documents (20 Invoices)
 
-All 30 digital vector invoices (indices 1 to 30) were evaluated:
-- **Routing Decision**: 100% of digital pages (32 pages across 30 documents, including multipage documents `DOC-SYN-010` and `DOC-SYN-028`) were correctly identified as containing sufficient native vector text and routed to PyMuPDF native extraction. Zero digital pages triggered unnecessary OCR fallback.
-- **Character & Word Extraction**:
-  - Minimum page character count: `416` characters.
-  - Maximum page character count: `543` characters.
-  - Average words per page: `77.5` words.
-- **Bounding Box Integrity**: 100% of extracted words and text blocks contained valid coordinate boxes within the page boundary dimensions (595.0 pt x 842.0 pt), with the origin strictly anchored at top-left `(0, 0)`.
-- **Confidence Provenance**: All native words explicitly recorded `confidence=None` to distinguish native vector parsing from statistical OCR inference.
-- **Throughput**: Extremely fast sub-millisecond to low-millisecond execution (average `2.50 ms` per document).
+All 20 scanned, image-only invoices (`DOC-SYN-031` to `DOC-SYN-050`) were processed using local Tesseract 5.4.0:
 
----
+### 3.1 Verification Checklist
+- **OCR Invocation**: 100% (20/20) of scanned documents were correctly detected as lacking native text and routed to the OCR fallback engine.
+- **Non-Empty Text**: 100% (20/20) produced non-empty text (range: 461 to 538 characters; mean: 516.1 chars).
+- **Spatial Tokens & Bounding Boxes**: Every word recognized by Tesseract was transformed from pixel space to PDF point space (`x0, y0, x1, y1`) and verified to fit within the page dimensions (595.0 pt x 842.0 pt).
+- **Confidence Values**: All OCR spatial tokens populated engine confidence scores (mean page confidence: 0.9405, min: 0.9292, max: 0.9489).
+- **Zero Errors / Zero Timeouts**: No page failed or timed out during OCR execution.
 
-## 4. Scanned PDF & OCR Routing Analysis (20 Documents)
+### 3.2 Ground-Truth Field Presence in OCR Output
+Evaluating raw substring occurrences of gold-standard values in the normalized OCR output:
+- **Invoice Number Presence**: 20/20 (100.0%) matched or correctly absent when deliberately omitted (`DOC-SYN-035`).
+- **Vendor Name Presence**: 20/20 (100.0%) matched.
+- **Total Amount Presence**: 20/20 (100.0%) matched.
 
-All 20 scanned image-based invoices (indices 31 to 50) were evaluated:
-- **Routing Decision**: 100% of scanned pages (20 pages) were evaluated by `PageExtractionRouter`. Because the native extraction layer contains 0 characters (`char_count = 0 < 50`), the routing engine identified them as image-based documents and triggered OCR fallback.
-- **Environmental Status**:
-  - `Tesseract Binary Available`: `False`
-  - When Tesseract is not installed on system PATH, the router logs an explicit, non-fatal warning on the page record (`Page appears scanned/image-based, but Tesseract OCR executable was not found on system PATH`) and returns the clean native container with 0 characters rather than crashing or fabricating data.
-  - Integration tests with mocked Tesseract confirm that when Tesseract is available, word bounding boxes are converted from pixel space to PDF points with engine-reported confidence scores.
+### 3.3 Uncalibrated Confidence Notice
+As established in ADR 0003:
+> The confidence scores reported by Tesseract (0.93–0.95) represent internal character prototype distance metrics and dictionary bonuses. They are **uncalibrated heuristic scores**, not statistical posterior probabilities.
 
 ---
 
-## 5. Normalization & Value Preservation
+## 4. Digital PDF Native Extraction (30 Invoices)
 
-During evaluation across all 50 documents, the deterministic normalization layer:
-1. Unified all line breaks to standard `\n` without altering tabular column relationships.
-2. Preserved monetary formats:
-   - Standard notation: `$120.00`, `USD 350.00`, `£450.00`.
-   - European notation with comma decimals: `1.240,50 €` (in `DOC-SYN-027`).
-3. Preserved invoice identifiers with complex or confusable glyphs:
-   - `INV-2024-001` through `INV-2024-0030`.
-   - `INV-0O1I1lB8` (in `DOC-SYN-029`).
-   - `INV-2024-DUP999` (in `DOC-SYN-030` and `DOC-SYN-045`).
+All 30 digital vector documents (`DOC-SYN-001` to `DOC-SYN-030`) were evaluated:
+- **Routing Decision**: 100% routed to native extraction. Zero digital pages triggered unnecessary OCR fallback.
+- **Extraction Fidelity**: Minimum 416 chars, maximum 543 chars.
+- **Multipage Handling**: Multipage documents `DOC-SYN-010` and `DOC-SYN-028` preserved page boundaries with both pages extracted in reading order.
+- **Confidence Provenance**: Native vector text explicitly recorded `confidence = None`.
 
 ---
 
-## 6. Limitations & Readiness for Phase 4
+## 5. Per-Document Scanned Extraction Breakdown
 
-1. **Host Tesseract Requirement for Scanned Extractions**: To obtain live text recognition on scanned PDFs in local runtime, Tesseract OCR binary must be installed on the host OS.
-2. **Phase 4 Transition**: The extraction engine delivers standardized `ExtractionResult` objects containing page-aware normalized text and spatial blocks. This provides the input for Phase 4: Structured Invoice Field Extraction & Business Validation.
+| Document ID | Layout Style | Skew Angle | DPI | OCR Words | OCR Chars | Avg. Conf | Duration | Status |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| `DOC-SYN-031` | scanned | variance | 300 | 79 | 517 | 0.93 | 940.1 ms | ✅ success |
+| `DOC-SYN-032` | scanned | variance | 300 | 78 | 515 | 0.95 | 936.7 ms | ✅ success |
+| `DOC-SYN-033` | scanned | variance | 300 | 80 | 538 | 0.94 | 1017.9 ms | ✅ success |
+| `DOC-SYN-034` | scanned | variance | 300 | 78 | 517 | 0.95 | 1039.2 ms | ✅ success |
+| `DOC-SYN-035` | scanned | variance | 300 | 79 | 516 | 0.95 | 955.8 ms | ✅ success |
+| `DOC-SYN-036` | scanned | variance | 300 | 81 | 507 | 0.94 | 1031.9 ms | ✅ success |
+| `DOC-SYN-037` | scanned | variance | 300 | 79 | 516 | 0.93 | 1007.8 ms | ✅ success |
+| `DOC-SYN-038` | scanned | variance | 300 | 80 | 528 | 0.94 | 1116.4 ms | ✅ success |
+| `DOC-SYN-039` | scanned | variance | 300 | 76 | 514 | 0.95 | 996.3 ms | ✅ success |
+| `DOC-SYN-040` | scanned | variance | 300 | 80 | 527 | 0.95 | 1075.9 ms | ✅ success |
+| `DOC-SYN-041` | scanned | variance | 300 | 76 | 497 | 0.93 | 979.6 ms | ✅ success |
+| `DOC-SYN-042` | scanned | variance | 300 | 70 | 461 | 0.93 | 998.9 ms | ✅ success |
+| `DOC-SYN-043` | scanned | variance | 300 | 80 | 535 | 0.94 | 1002.8 ms | ✅ success |
+| `DOC-SYN-044` | scanned | variance | 300 | 80 | 532 | 0.95 | 1089.4 ms | ✅ success |
+| `DOC-SYN-045` | scanned | variance | 300 | 77 | 527 | 0.94 | 1085.7 ms | ✅ success |
+| `DOC-SYN-046` | scanned | variance | 300 | 79 | 502 | 0.94 | 1087.4 ms | ✅ success |
+| `DOC-SYN-047` | scanned | variance | 300 | 79 | 513 | 0.94 | 989.9 ms | ✅ success |
+| `DOC-SYN-048` | scanned | variance | 300 | 81 | 518 | 0.95 | 1070.7 ms | ✅ success |
+| `DOC-SYN-049` | scanned | variance | 300 | 76 | 507 | 0.94 | 991.3 ms | ✅ success |
+| `DOC-SYN-050` | scanned | variance | 300 | 81 | 536 | 0.94 | 1076.5 ms | ✅ success |
+
+---
+
+## 6. Known Limitations
+
+1. **OCR Latency vs. Native Speed**: Native digital text extraction averages ~2.7 ms per document, while 300 DPI rasterization and Tesseract OCR averages ~700–1200 ms per document.
+2. **Degraded & Skewed Text Variances**: In heavy skew scenarios (e.g. ±2.5°), word bounding boxes may span slight vertical drift, which structured field extraction in Phase 4 must account for using tolerance bands.

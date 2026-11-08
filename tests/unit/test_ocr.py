@@ -4,12 +4,25 @@ from pathlib import Path
 from unittest.mock import MagicMock
 
 import pymupdf
+import pytesseract
 import pytest
 
 from documind.config import Settings
 from documind.exceptions import OCRError, OCRTimeoutError, TesseractNotFoundError
 from documind.extraction.models import PageExtractionMethod
-from documind.extraction.ocr import OCREngine, is_tesseract_available
+from documind.extraction.ocr import (
+    OCREngine,
+    is_tesseract_available,
+    resolve_tesseract_cmd,
+)
+
+
+@pytest.fixture(autouse=True)
+def isolate_pytesseract_global_cmd():
+    """Preserve and restore pytesseract.pytesseract.tesseract_cmd to prevent global state leakage."""
+    original_cmd = pytesseract.pytesseract.tesseract_cmd
+    yield
+    pytesseract.pytesseract.tesseract_cmd = original_cmd
 
 
 @pytest.mark.unit
@@ -23,8 +36,45 @@ def test_tesseract_missing_raises_error(temp_dir: Path) -> None:
     with pytest.raises(TesseractNotFoundError) as exc_info:
         engine.check_availability()
 
+    assert "Configured Tesseract executable path does not exist" in str(
+        exc_info.value
+    ) or "Tesseract OCR binary could not be found" in str(exc_info.value)
+    assert "DOCUMIND_TESSERACT_CMD" in str(exc_info.value)
+
+
+@pytest.mark.unit
+def test_tesseract_missing_from_system_paths(
+    temp_dir: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Verify that when no explicit path is set and system PATH/known dirs lack Tesseract, an error is raised."""
+    monkeypatch.setattr("documind.extraction.ocr.STANDARD_WINDOWS_TESSERACT_PATHS", [])
+    monkeypatch.setattr("shutil.which", lambda _cmd: None)
+
+    settings = Settings(project_root=temp_dir, tesseract_cmd=None)
+    engine = OCREngine(settings)
+
+    with pytest.raises(TesseractNotFoundError) as exc_info:
+        engine.check_availability()
+
     assert "Tesseract OCR binary could not be found" in str(exc_info.value)
     assert "DOCUMIND_TESSERACT_CMD" in str(exc_info.value)
+
+
+@pytest.mark.unit
+def test_tesseract_explicit_valid_path(temp_dir: Path) -> None:
+    """Verify an explicit valid executable path is respected and preferred."""
+    dummy_exe = temp_dir / "my_tesseract.exe"
+    dummy_exe.write_text("executable placeholder")
+
+    settings = Settings(
+        project_root=temp_dir,
+        tesseract_cmd=str(dummy_exe),
+    )
+    resolved = resolve_tesseract_cmd(settings)
+    assert resolved == str(dummy_exe)
+
+    engine = OCREngine(settings)
+    assert engine.tesseract_cmd == str(dummy_exe)
 
 
 @pytest.mark.unit

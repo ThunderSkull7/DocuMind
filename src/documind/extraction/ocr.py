@@ -42,7 +42,7 @@ def resolve_tesseract_cmd(settings: Settings | None = None) -> str | None:
     """Resolve the executable path for the Tesseract binary.
 
     Checks:
-    1. Explicit setting in DOCUMIND_TESSERACT_CMD.
+    1. Explicit setting in DOCUMIND_TESSERACT_CMD (if provided, must exist).
     2. System PATH via shutil.which('tesseract').
     3. Common Windows default installation paths.
 
@@ -51,9 +51,11 @@ def resolve_tesseract_cmd(settings: Settings | None = None) -> str | None:
     """
     cfg = settings or get_settings()
 
-    # 1. Configured path
-    if cfg.tesseract_cmd and Path(cfg.tesseract_cmd).is_file():
-        return cfg.tesseract_cmd
+    # 1. Configured path (if explicitly set, use it or fail)
+    if cfg.tesseract_cmd:
+        if Path(cfg.tesseract_cmd).is_file():
+            return cfg.tesseract_cmd
+        return None
 
     # 2. System PATH
     found = shutil.which("tesseract")
@@ -81,13 +83,26 @@ class OCREngine:
         self.settings = settings or get_settings()
         self.tesseract_cmd = resolve_tesseract_cmd(self.settings)
 
+        # Synchronize pytesseract global executable path with resolved setting or configured intent
         if self.tesseract_cmd:
             pytesseract.pytesseract.tesseract_cmd = self.tesseract_cmd
+        elif self.settings.tesseract_cmd:
+            pytesseract.pytesseract.tesseract_cmd = self.settings.tesseract_cmd
+        else:
+            pytesseract.pytesseract.tesseract_cmd = "tesseract"
 
     def check_availability(self) -> None:
         """Verify Tesseract binary presence; raise TesseractNotFoundError if absent."""
         if not self.settings.ocr_enabled:
             raise OCRError("OCR is disabled in configuration (DOCUMIND_OCR_ENABLED=false).")
+
+        if self.settings.tesseract_cmd and not self.tesseract_cmd:
+            msg = (
+                f"Configured Tesseract executable path does not exist: '{self.settings.tesseract_cmd}'.\n"
+                "Please check DOCUMIND_TESSERACT_CMD in your environment or .env file."
+            )
+            logger.error(msg)
+            raise TesseractNotFoundError(msg)
 
         if not self.tesseract_cmd or not is_tesseract_available(self.settings):
             msg = (
