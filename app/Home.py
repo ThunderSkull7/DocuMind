@@ -1,7 +1,7 @@
 """DocuMind Streamlit Application - Entry Point.
 
-Phase 2 foundation providing system diagnostics, synthetic corpus stats,
-and isolated document ingestion verification.
+Phase 3 foundation providing system diagnostics, synthetic corpus stats,
+document ingestion, and hybrid extraction demonstration.
 """
 
 import sys
@@ -11,6 +11,8 @@ import streamlit as st
 from documind import __version__
 from documind.config import get_settings
 from documind.dataset.models import DatasetManifest
+from documind.extraction.ocr import is_tesseract_available
+from documind.extraction.service import ExtractionService
 from documind.ingestion.service import IngestionService
 
 
@@ -27,16 +29,17 @@ def main() -> None:
     st.subheader("Intelligent Document Extraction & Verification System")
 
     st.info(
-        f"**Phase 2 Active** — Synthetic Corpus & Secure Ingestion | Version {__version__} | Environment: `{settings.env}`"
+        f"**Phase 3 Active** — Hybrid PDF Text Extraction & OCR Pipeline | "
+        f"Version {__version__} | Environment: `{settings.env}`"
     )
 
     col1, col2 = st.columns([2, 1])
 
     with col1:
-        st.markdown("### 📥 Document Ingestion Demonstration")
+        st.markdown("### 📥 Ingestion & Extraction Demonstration")
         st.caption(
-            "Upload an invoice PDF to test file signature checks, parser compatibility, "
-            "atomic storage, and SHA-256 metadata generation."
+            "Upload an invoice PDF to test validation, storage, and page-level hybrid extraction "
+            "(PyMuPDF native text with automatic Tesseract OCR fallback)."
         )
 
         uploaded_file = st.file_uploader(
@@ -46,35 +49,65 @@ def main() -> None:
         )
 
         if uploaded_file is not None:
-            service = IngestionService()
-            result = service.ingest(
+            ingestion_svc = IngestionService()
+            ingest_result = ingestion_svc.ingest(
                 file_input=uploaded_file,
                 original_filename=uploaded_file.name,
             )
 
-            if result.success:
+            if ingest_result.success:
+                doc_id = ingest_result.metadata.document_id
                 st.success(
-                    f"✅ Document successfully validated and safely stored! Internal ID: `{result.metadata.document_id}`"
+                    f"✅ Ingestion Successful! Internal ID: `{doc_id}` | "
+                    f"Pages: `{ingest_result.metadata.page_count}` | "
+                    f"SHA-256: `{ingest_result.metadata.sha256_hash[:16]}...`"
                 )
-                st.json(
-                    {
-                        "document_id": result.metadata.document_id,
-                        "original_filename": result.metadata.original_filename,
-                        "sanitized_filename": result.metadata.sanitized_filename,
-                        "sha256_hash": result.metadata.sha256_hash,
-                        "page_count": result.metadata.page_count,
-                        "file_size_bytes": result.metadata.file_size_bytes,
-                        "storage_path": result.metadata.storage_path,
-                        "status": result.metadata.status.value,
-                    }
+
+                st.markdown("#### ⚙️ Extraction Output")
+                extraction_svc = ExtractionService()
+                extract_result = extraction_svc.extract_document(
+                    document_id=doc_id,
+                    expected_hash=ingest_result.metadata.sha256_hash,
                 )
-                st.info("ℹ️ Structured extraction and OCR fallback are scheduled for Phase 3.")
+
+                st.write(
+                    f"**Status:** `{extract_result.extraction_status.value}` | "
+                    f"**Strategy:** `{extract_result.overall_extraction_method.value}` | "
+                    f"**Duration:** `{extract_result.processing_duration_ms:.1f} ms`"
+                )
+
+                if extract_result.warnings:
+                    for w in extract_result.warnings:
+                        st.warning(f"⚠️ {w}")
+
+                for page in extract_result.pages:
+                    badge = (
+                        "🟦 Native Vector Text"
+                        if page.extraction_method.value == "native_text"
+                        else "🟧 OCR Fallback"
+                    )
+                    with st.expander(
+                        f"Page {page.page_number} — {badge} ({page.character_count} chars, {page.word_count} words)",
+                        expanded=True,
+                    ):
+                        st.caption(
+                            f"Page Dimensions: {page.page_width:.1f} x {page.page_height:.1f} pt"
+                        )
+                        st.text_area(
+                            f"Normalized Text (Page {page.page_number})",
+                            value=page.normalized_text,
+                            height=200,
+                            disabled=True,
+                        )
+                        if page.quality:
+                            st.json(page.quality.signals)
+
             else:
-                st.error(f"❌ Ingestion rejected: {result.error_message}")
-                st.write("**Validation Details:**", result.metadata.validation.model_dump())
+                st.error(f"❌ Ingestion rejected: {ingest_result.error_message}")
+                st.write("**Validation Details:**", ingest_result.metadata.validation.model_dump())
 
         st.markdown("---")
-        st.markdown("### 📚 Synthetic Invoice Corpus (Phase 2)")
+        st.markdown("### 📚 Synthetic Invoice Corpus (Phase 2 & 3)")
         manifest_path = settings.data_dir / "manifest.json"
         if manifest_path.is_file():
             try:
@@ -94,18 +127,25 @@ def main() -> None:
                 st.warning(f"Could not load dataset manifest: {e}")
 
     with col2:
-        st.markdown("### ⚙️ Environment & Ingestion Limits")
+        st.markdown("### ⚙️ Environment & Extraction Diagnostics")
         st.write(f"**Python Version:** `{sys.version.split()[0]}`")
         st.write(f"**Log Level:** `{settings.log_level}`")
         st.write(f"**Max Upload Size:** `{settings.max_upload_size_mb} MB`")
         st.write(f"**Max Page Count:** `{settings.max_page_count}`")
-        st.write(f"**Allow Encrypted PDFs:** `{settings.allow_encrypted_pdfs}`")
-        st.write(f"**Storage Directory:** `{settings.storage_dir.name}`")
+        st.write(f"**OCR Enabled:** `{settings.ocr_enabled}`")
+        st.write(f"**OCR Rendering DPI:** `{settings.ocr_dpi}`")
         st.write(
-            f"**Tesseract Path:** `{'Configured' if settings.tesseract_cmd else 'System PATH'}`"
+            f"**Tesseract Binary:** `{'Available' if is_tesseract_available(settings) else 'Not Found (PATH)'}`"
         )
+        st.write(f"**Min Native Char Threshold:** `{settings.routing_min_char_count}`")
 
-        st.success("✅ Secure Ingestion & Synthetic Dataset ready for Phase 3.")
+        if not is_tesseract_available(settings):
+            st.warning(
+                "Tesseract executable is not detected on PATH. "
+                "Digital vector extraction is fully active; scanned PDFs will report OCR unavailable warnings."
+            )
+        else:
+            st.success("✅ Tesseract OCR available for scanned image fallback.")
 
 
 if __name__ == "__main__":

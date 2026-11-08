@@ -141,7 +141,11 @@ class StorageManager:
             if not doc_dir.exists():
                 return None
             for item in doc_dir.iterdir():
-                if item.is_file() and not item.name.endswith(".tmp"):
+                if (
+                    item.is_file()
+                    and item.suffix.lower() == ".pdf"
+                    and not item.name.endswith(".tmp")
+                ):
                     return item
         except PathTraversalError:
             return None

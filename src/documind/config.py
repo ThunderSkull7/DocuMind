@@ -48,8 +48,16 @@ class Settings(BaseSettings):
 
     # OCR settings
     tesseract_cmd: str | None = None
+    ocr_enabled: bool = True
     ocr_default_lang: str = "eng"
     ocr_dpi: int = Field(default=300, ge=72, le=600)
+    ocr_psm: int = Field(default=3, ge=0, le=13)
+    ocr_timeout_seconds: int = Field(default=30, ge=1, le=300)
+
+    # Hybrid routing thresholds
+    routing_min_char_count: int = Field(default=50, ge=0)
+    routing_min_alpha_ratio: float = Field(default=0.4, ge=0.0, le=1.0)
+    routing_min_word_count: int = Field(default=5, ge=0)
 
     # Streamlit UI settings
     app_host: str = "localhost"

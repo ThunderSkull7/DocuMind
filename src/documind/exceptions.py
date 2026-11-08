@@ -71,6 +71,22 @@ class OCRError(ExtractionError):
     """Raised when optical character recognition fails or engine is unavailable."""
 
 
+class TesseractNotFoundError(OCRError):
+    """Raised when Tesseract OCR binary cannot be located on system PATH or configured path."""
+
+
+class OCRTimeoutError(OCRError):
+    """Raised when an OCR operation exceeds the configured execution timeout."""
+
+
+class PDFExtractionError(ExtractionError):
+    """Raised when native PDF text extraction encounters a structural or parser error."""
+
+
+class PageExtractionError(ExtractionError):
+    """Raised when processing fails on an individual document page."""
+
+
 class ValidationError(DocuMindError):
     """Base exception for schema or business rule validation failures."""
 
