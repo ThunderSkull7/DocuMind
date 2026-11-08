@@ -39,3 +39,4 @@ body:
       label: "Relevant Logs or Traceback"
       description: "Paste sanitized terminal output or traceback here (scrub any personal data)"
       render: shell
+

@@ -6,13 +6,15 @@ state transitions, and reviewer assignments with actor attribution and timestamp
 
 import threading
 import uuid
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 from enum import Enum
 from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
 
 from documind.exceptions import ReviewError
+
+UTC = timezone.utc
 
 
 class AuditEventType(str, Enum):

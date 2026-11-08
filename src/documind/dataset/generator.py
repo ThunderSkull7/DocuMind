@@ -7,7 +7,7 @@ ground-truth annotations, deliberate challenging edge cases, and manifest catalo
 import hashlib
 import io
 import random
-from datetime import UTC, date, datetime
+from datetime import date, datetime, timezone
 from decimal import Decimal
 from pathlib import Path
 
@@ -26,6 +26,7 @@ from documind.dataset.models import (
 )
 from documind.logging import get_logger
 
+UTC = timezone.utc
 logger = get_logger("dataset.generator")
 
 # Fictional vendor master data (completely synthetic)

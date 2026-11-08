@@ -1,6 +1,6 @@
 """Validation orchestration service coordinating arithmetic, business rules, and discrepancies."""
 
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 
 from documind.schemas.invoice import InvoiceExtractionRecord
 from documind.validation.arithmetic import ArithmeticValidator
@@ -14,6 +14,8 @@ from documind.validation.models import (
     ValidationResult,
 )
 from documind.validation.reference_matching import ReferenceMatcher
+
+UTC = timezone.utc
 
 
 class ValidationService:

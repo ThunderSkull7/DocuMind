@@ -1,7 +1,7 @@
 """Unit tests verifying reporting exporters and CSV formula-injection sanitization."""
 
 import json
-from datetime import UTC, date, datetime
+from datetime import date, datetime, timezone
 from decimal import Decimal
 
 from documind.reporting.csv_sanitizer import sanitize_csv_value
@@ -33,6 +33,8 @@ from documind.validation.models import (
     ValidationOutcome,
     ValidationResult,
 )
+
+UTC = timezone.utc
 
 
 def test_csv_formula_injection_sanitization() -> None:

@@ -4,7 +4,7 @@ Provides engine configuration inspection, sample corpus batch ingestion tools,
 and export downloads for processing summaries, validation results, corrections, and audit logs.
 """
 
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 
 import streamlit as st
 from app.services.state import get_app_state
@@ -19,6 +19,8 @@ from documind.reporting.exporters import (
     ProcessingSummaryExporter,
     ReviewOutcomeExporter,
 )
+
+UTC = timezone.utc
 
 st.set_page_config(
     page_title="Settings & Exports - DocuMind",

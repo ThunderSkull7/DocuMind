@@ -1,6 +1,6 @@
 """Unit tests verifying the human review lifecycle and state transition rules."""
 
-from datetime import UTC, date, datetime
+from datetime import date, datetime, timezone
 from decimal import Decimal
 
 import pytest
@@ -28,6 +28,8 @@ from documind.validation.models import (
     ValidationOutcome,
     ValidationResult,
 )
+
+UTC = timezone.utc
 
 
 def _make_dummy_record(

@@ -6,7 +6,7 @@ non-destructive field corrections, and re-validation of corrected document repre
 
 import threading
 import uuid
-from datetime import UTC, date, datetime
+from datetime import date, datetime, timezone
 from decimal import Decimal
 from typing import Any
 
@@ -45,6 +45,8 @@ from documind.validation.models import (
     ValidationResult,
 )
 from documind.validation.service import ValidationService
+
+UTC = timezone.utc
 
 
 class ReviewService:

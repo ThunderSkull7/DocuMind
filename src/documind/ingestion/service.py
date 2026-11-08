@@ -1,7 +1,7 @@
 """Ingestion service coordinating validation, metadata, and secure storage."""
 
 import json
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import BinaryIO
 
@@ -15,6 +15,7 @@ from documind.ingestion.models import (
 from documind.ingestion.storage import StorageManager, sanitize_filename
 from documind.logging import get_logger
 
+UTC = timezone.utc
 logger = get_logger("ingestion.service")
 
 

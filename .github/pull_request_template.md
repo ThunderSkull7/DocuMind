@@ -14,3 +14,4 @@ Brief summary of the proposed changes and motivation.
 
 ## Security & Privacy Considerations
 Does this change impact document ingestion, external network isolation, or CSV/JSON export sanitization?
+

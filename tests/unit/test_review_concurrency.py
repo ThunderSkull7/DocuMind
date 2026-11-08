@@ -1,6 +1,6 @@
 """Unit tests verifying optimistic concurrency and revision conflict detection."""
 
-from datetime import UTC, date, datetime
+from datetime import date, datetime, timezone
 from decimal import Decimal
 
 import pytest
@@ -15,6 +15,8 @@ from documind.validation.models import (
     OverallValidationStatus,
     ValidationResult,
 )
+
+UTC = timezone.utc
 
 
 def _make_dummy_record(doc_id: str = "DOC-CONC-01") -> InvoiceExtractionRecord:

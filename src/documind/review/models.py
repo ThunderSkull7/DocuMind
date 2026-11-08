@@ -5,7 +5,7 @@ field-level corrections, and document approval gateways.
 """
 
 import uuid
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 from enum import Enum
 from typing import Any
 
@@ -13,6 +13,8 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from documind.schemas.invoice import InvoiceData
 from documind.validation.models import OverallValidationStatus, ValidationResult
+
+UTC = timezone.utc
 
 
 class ReviewStatus(str, Enum):

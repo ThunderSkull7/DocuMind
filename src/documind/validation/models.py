@@ -4,13 +4,15 @@ Defines standardized data structures for validation outcomes, severities,
 arithmetic checks, duplicate detection, and evidence-grounded discrepancy reporting.
 """
 
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 from enum import Enum
 from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
 
 from documind.schemas.invoice import FieldEvidence
+
+UTC = timezone.utc
 
 
 class ValidationOutcome(str, Enum):
