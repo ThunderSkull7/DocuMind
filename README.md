@@ -389,3 +389,8 @@ This project is licensed under the **MIT License** — see the [LICENSE](LICENSE
 
 ### Disclaimer
 DocuMind is an open-source AI/ML engineering portfolio demonstration and reference implementation. It is not certified for statutory accounting, tax reporting, or regulatory financial compliance. Organizations must conduct independent validation before deploying it for critical financial operations.
+
+
+## Real-world evaluation boundary
+
+The current 50-document benchmark is synthetic and does not establish performance on external invoices. See the [real-world evaluation protocol](docs/real_world_evaluation_protocol.md) for the data permissions, sampling, annotation, and reporting required before making broader accuracy claims.
